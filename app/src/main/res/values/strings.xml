@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Reminder for MIUI</string>
+    <string name="edit_mode_name">Edit notification</string>
+    <string name="action_settings">Settings</string>
+    <string name="btn_send">send</string>
+    <string name="notification_edit_title">Enter title</string>
+    <string name="notifications_edit_message">Enter message</string>
+    <string name="btn_send_close">send and close</string>
+    <string name="name_choose_image">Choose icon</string>
+</resources>

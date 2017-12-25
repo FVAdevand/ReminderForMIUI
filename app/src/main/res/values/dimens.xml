@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="margin_screen_edge">16dp</dimen>
+    <dimen name="padding_notification">10dp</dimen>
+    <dimen name="title_notification_text">16sp</dimen>
+    <dimen name="message_notification_text">14sp</dimen>
+</resources>

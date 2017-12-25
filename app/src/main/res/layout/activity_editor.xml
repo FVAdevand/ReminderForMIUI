@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/margin_screen_edge"
+    android:layout_marginStart="@dimen/margin_screen_edge"
+    tools:context="fvadevand.reminderformiui.EditorActivity">
+
+    <EditText
+        android:id="@+id/title_ET"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_screen_edge"
+        android:hint="@string/notification_edit_title"
+        android:inputType="textCapSentences"
+        app:layout_constraintEnd_toStartOf="@id/notification_icon_IB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/message_ET"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/notifications_edit_message"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@id/notification_icon_IB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_ET" />
+
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_send"
+        app:layout_constraintEnd_toStartOf="@+id/send_close_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/message_ET" />
+
+    <ImageButton
+        android:id="@+id/notification_icon_IB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/message_ET"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_done_white_24px" />
+
+    <Button
+        android:id="@+id/send_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_send_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/send_button"
+        app:layout_constraintTop_toBottomOf="@+id/message_ET" />
+</android.support.constraint.ConstraintLayout>
