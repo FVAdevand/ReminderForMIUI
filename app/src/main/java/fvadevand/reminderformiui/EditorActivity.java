@@ -1,5 +1,6 @@
 package fvadevand.reminderformiui;
 
+import android.app.DialogFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,18 +12,25 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RemoteViews;
 
 import java.lang.reflect.Field;
 
-public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
+public class EditorActivity extends AppCompatActivity implements View.OnClickListener, ImageGridDialogFragment.ImageGridDialogListener {
 
     private EditText mTitleET;
+    private EditText mMessageET;
+    private ImageButton mChooseImageButton;
+    private int mImageId;
+    private InputMethodManager mInputMethodManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         Button sendButton = findViewById(R.id.send_button);
         sendButton.setOnClickListener(this);
@@ -30,7 +38,13 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         Button sendCloseButton = findViewById(R.id.send_close_button);
         sendCloseButton.setOnClickListener(this);
 
+        mImageId = R.drawable.ic_done_black_24px;
+        mChooseImageButton = findViewById(R.id.notification_icon_IB);
+        mChooseImageButton.setImageResource(mImageId);
+        mChooseImageButton.setOnClickListener(this);
+
         mTitleET = findViewById(R.id.title_ET);
+        mMessageET = findViewById(R.id.message_ET);
         mTitleET.requestFocus();
 
     }
@@ -38,15 +52,37 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
 
-        int buttonId = view.getId();
+        switch (view.getId()) {
 
-        EditText messageET = findViewById(R.id.message_ET);
+            case R.id.notification_icon_IB: {
+                DialogFragment dialog = new ImageGridDialogFragment();
+                dialog.show(getFragmentManager(), "ImageGridDialog");
+                break;
+            }
 
-        String title = mTitleET.getText().toString();
-        String message = messageET.getText().toString();
+            case R.id.send_button: {
+                sendNotification();
+                mTitleET.setText("");
+                mMessageET.setText("");
+                mTitleET.requestFocus();
+                mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
+                break;
+            }
+
+            case R.id.send_close_button: {
+                sendNotification();
+                finishAffinity();
+            }
+        }
+    }
+
+    private void sendNotification() {
+
+        String title = mTitleET.getText().toString().trim();
+        String message = mMessageET.getText().toString().trim();
 
         RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.custom_push);
-        notificationView.setImageViewResource(R.id.large_image_IV, R.drawable.ic_done_black_24px);
+        notificationView.setImageViewResource(R.id.large_image_IV, mImageId);
         notificationView.setTextViewText(R.id.title_TV, title);
         notificationView.setTextViewText(R.id.message_TV, message);
 
@@ -77,23 +113,12 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
-
-        switch (buttonId) {
-            case R.id.send_button: {
-                mTitleET.setText("");
-                messageET.setText("");
-                mTitleET.requestFocus();
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (inputMethodManager != null) {
-                    inputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
-                }
-                break;
-            }
-
-            case R.id.send_close_button: {
-                finishAffinity();
-            }
-        }
     }
 
+    @Override
+    public void onImageItemClick(int resourceId) {
+        mImageId = resourceId;
+        mChooseImageButton.setImageResource(resourceId);
+        mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+    }
 }

@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_marginEnd="16dp"
-        android:padding="@dimen/padding_notification"
+        android:padding="6dp"
         android:src="@drawable/ic_done_black_24px" />
 
     <TextView
