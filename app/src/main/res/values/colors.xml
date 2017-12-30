@@ -6,4 +6,5 @@
     <color name="title_notification_text">#000000</color>
     <color name="message_notification_text">#424242</color>
     <color name="time_notification_text">#00BCD4</color>
+    <color name="color_image_notification">#3F51B5</color>
 </resources>

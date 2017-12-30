@@ -43,12 +43,13 @@
 
     <ImageButton
         android:id="@+id/notification_icon_IB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/message_ET"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_done_white_24px" />
+        app:srcCompat="@drawable/add_color" />
 
     <Button
         android:id="@+id/send_close_button"
