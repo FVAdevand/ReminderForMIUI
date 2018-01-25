@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.RemoteViews;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
@@ -90,7 +92,11 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         RemoteViews notificationView = new RemoteViews(getPackageName(), R.layout.custom_push);
         notificationView.setImageViewResource(R.id.large_image_IV, mImageId);
         notificationView.setTextViewText(R.id.title_TV, title);
-        notificationView.setTextViewText(R.id.message_TV, message);
+        if (TextUtils.isEmpty(message)) {
+            notificationView.setViewVisibility(R.id.message_TV, View.GONE);
+        } else {
+            notificationView.setTextViewText(R.id.message_TV, message);
+        }
 
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -117,8 +123,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         }
 
+        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
+        notificationManager.notify(notificationId, notification);
     }
 
     @Override

@@ -4,4 +4,5 @@
     <dimen name="padding_notification">10dp</dimen>
     <dimen name="title_notification_text">16sp</dimen>
     <dimen name="message_notification_text">14sp</dimen>
+    <dimen name="push_image_padding">6dp</dimen>
 </resources>
