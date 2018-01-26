@@ -1,7 +1,19 @@
 package fvadevand.reminderformiui.utilities;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
 import android.util.SparseIntArray;
+import android.view.View;
+import android.widget.RemoteViews;
 
+import java.lang.reflect.Field;
+import java.util.Date;
+
+import fvadevand.reminderformiui.MainActivity;
 import fvadevand.reminderformiui.R;
 
 /**
@@ -12,7 +24,7 @@ public class ReminderUtils {
     private ReminderUtils() {
     }
 
-    public static SparseIntArray getImageIdArray() {
+    private static SparseIntArray getImageIdArray() {
         SparseIntArray imageIdArray = new SparseIntArray();
         imageIdArray.put(R.drawable.add_color, R.drawable.add);
         imageIdArray.put(R.drawable.agenda_color, R.drawable.agenda);
@@ -83,5 +95,51 @@ public class ReminderUtils {
             thumbIds[i] = imageIdArray.keyAt(i);
         }
         return thumbIds;
+    }
+
+    private static int getMonocolorImageId(int multicolorImageId) {
+        SparseIntArray imageIdArray = getImageIdArray();
+        return imageIdArray.get(multicolorImageId);
+    }
+
+    public static void sendNotification(Context context, int imageId, String title, String message) {
+
+        RemoteViews notificationView = new RemoteViews(context.getPackageName(), R.layout.custom_push);
+        notificationView.setImageViewResource(R.id.large_image_IV, imageId);
+        notificationView.setTextViewText(R.id.title_TV, title);
+        if (TextUtils.isEmpty(message)) {
+            notificationView.setViewVisibility(R.id.message_TV, View.GONE);
+        } else {
+            notificationView.setTextViewText(R.id.message_TV, message);
+        }
+
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        Notification notification = new Notification.Builder(context)
+                .setSmallIcon(getMonocolorImageId(imageId))
+                .setContent(notificationView)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setOngoing(true)
+                .build();
+
+        try {
+            Object miuiNotification = Class.forName("android.app.MiuiNotification").newInstance();
+            Field customizedIconField = miuiNotification.getClass().getDeclaredField("customizedIcon");
+            customizedIconField.setAccessible(true);
+            customizedIconField.set(miuiNotification, true);
+
+            Field extraNotificationField = notification.getClass().getField("extraNotification");
+            extraNotificationField.setAccessible(true);
+            extraNotificationField.set(notification, miuiNotification);
+
+        } catch (Exception e) {
+
+        }
+
+        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(notificationId, notification);
     }
 }
