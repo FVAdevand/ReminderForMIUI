@@ -21,6 +21,8 @@ import fvadevand.reminderformiui.R;
  */
 
 public class ReminderUtils {
+
+    private static final String LOG_TAG = ReminderUtils.class.getSimpleName();
     private ReminderUtils() {
     }
 
