@@ -2,12 +2,9 @@ package fvadevand.reminderformiui.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
-import fvadevand.reminderformiui.data.NotificationDbHelper;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 /**
@@ -24,21 +21,10 @@ public class NotificationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        NotificationDbHelper dbHelper = new NotificationDbHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(NotificationEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-        while (cursor.moveToNext()) {
-            int imageId = cursor.getInt(cursor.getColumnIndex(NotificationEntry.COLUMN_IMAGE_ID));
-            String title = cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_TITLE));
-            String message = cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_MESSAGE));
-            ReminderUtils.sendNotification(this, imageId, title, message);
-        }
-        cursor.close();
+        String action = intent.getAction();
+        Log.e(LOG_TAG, action);
+        int notificationId = intent.getIntExtra(ReminderUtils.KEY_NOTIFICATION_ID, 0);
+        Log.e(LOG_TAG, notificationId + "");
+        NotificationTask.executeTask(this, action, notificationId);
     }
 }

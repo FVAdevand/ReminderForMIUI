@@ -11,10 +11,10 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import java.lang.reflect.Field;
-import java.util.Date;
 
-import fvadevand.reminderformiui.MainActivity;
 import fvadevand.reminderformiui.R;
+import fvadevand.reminderformiui.service.NotificationIntentService;
+import fvadevand.reminderformiui.service.NotificationTask;
 
 /**
  * Created by Vladimir on 24.01.2018.
@@ -22,6 +22,7 @@ import fvadevand.reminderformiui.R;
 
 public class ReminderUtils {
 
+    public static final String KEY_NOTIFICATION_ID = "key_notification_id";
     private static final String LOG_TAG = ReminderUtils.class.getSimpleName();
     private ReminderUtils() {
     }
@@ -104,7 +105,7 @@ public class ReminderUtils {
         return imageIdArray.get(multicolorImageId);
     }
 
-    public static void sendNotification(Context context, int imageId, String title, String message) {
+    public static void sendNotification(Context context, int notificationId, int imageId, String title, String message) {
 
         RemoteViews notificationView = new RemoteViews(context.getPackageName(), R.layout.custom_push);
         notificationView.setImageViewResource(R.id.large_image_IV, imageId);
@@ -115,14 +116,16 @@ public class ReminderUtils {
             notificationView.setTextViewText(R.id.message_TV, message);
         }
 
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        Intent intent = new Intent(context, NotificationIntentService.class);
+        intent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
+        intent.putExtra(KEY_NOTIFICATION_ID, notificationId);
+        PendingIntent pendingIntent = PendingIntent.getService(context, notificationId, intent, 0);
 
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(getMonocolorImageId(imageId))
                 .setContent(notificationView)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
+//                .setAutoCancel(true)
                 .setOngoing(true)
                 .build();
 
@@ -140,8 +143,12 @@ public class ReminderUtils {
 
         }
 
-        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(notificationId, notification);
+    }
+
+    public static void deleteNotification(Context context, int notificationId) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(notificationId);
     }
 }

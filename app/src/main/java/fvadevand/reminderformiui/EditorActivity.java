@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.util.Date;
+
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 import fvadevand.reminderformiui.data.NotificationDbHelper;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
@@ -79,18 +81,20 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         String title = mTitleET.getText().toString().trim();
         String message = mMessageET.getText().toString().trim();
+        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         NotificationDbHelper dbHelper = new NotificationDbHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(NotificationEntry.COLUMN_NOTIFICATIONS_ID, notificationId);
         contentValues.put(NotificationEntry.COLUMN_IMAGE_ID, mImageId);
         contentValues.put(NotificationEntry.COLUMN_TITLE, title);
         contentValues.put(NotificationEntry.COLUMN_MESSAGE, message);
-        long savedRow = db.insert(
+        long savedRowId = db.insert(
                 NotificationEntry.TABLE_NAME,
                 null,
                 contentValues);
-        if (savedRow > 0) {
-            ReminderUtils.sendNotification(this, mImageId, title, message);
+        if (savedRowId > 0) {
+            ReminderUtils.sendNotification(this, notificationId, mImageId, title, message);
         }
     }
 

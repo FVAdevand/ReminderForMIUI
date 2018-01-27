@@ -15,6 +15,7 @@ public class RebootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent startServiceIntent = new Intent(context, NotificationIntentService.class);
+        startServiceIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATION);
         context.startService(startServiceIntent);
     }
 }
