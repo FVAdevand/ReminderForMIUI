@@ -26,6 +26,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private int mImageId;
     private InputMethodManager mInputMethodManager;
 
+    // TODO 2: add AlarmManager to send notification. Send notification after some time.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +80,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void saveNotification() {
+
+        // TODO 1: change notificationId on _ID from SQL database
 
         String title = mTitleET.getText().toString().trim();
         String message = mMessageET.getText().toString().trim();

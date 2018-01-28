@@ -12,6 +12,7 @@ import android.widget.RemoteViews;
 
 import java.lang.reflect.Field;
 
+import fvadevand.reminderformiui.MainActivity;
 import fvadevand.reminderformiui.R;
 import fvadevand.reminderformiui.service.NotificationIntentService;
 import fvadevand.reminderformiui.service.NotificationTask;
@@ -116,15 +117,19 @@ public class ReminderUtils {
             notificationView.setTextViewText(R.id.message_TV, message);
         }
 
-        Intent intent = new Intent(context, NotificationIntentService.class);
-        intent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
-        intent.putExtra(KEY_NOTIFICATION_ID, notificationId);
-        PendingIntent pendingIntent = PendingIntent.getService(context, notificationId, intent, 0);
+        Intent startActivityIntent = new Intent(context, MainActivity.class);
+        PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, 0);
+
+        Intent startServiceIntent = new Intent(context, NotificationIntentService.class);
+        startServiceIntent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
+        startServiceIntent.putExtra(KEY_NOTIFICATION_ID, notificationId);
+        PendingIntent startServicePendingIntent = PendingIntent.getService(context, notificationId, startServiceIntent, 0);
+        notificationView.setOnClickPendingIntent(R.id.delete_button, startServicePendingIntent);
 
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(getMonocolorImageId(imageId))
                 .setContent(notificationView)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(startActivityPendingIntent)
 //                .setAutoCancel(true)
                 .setOngoing(true)
                 .build();
