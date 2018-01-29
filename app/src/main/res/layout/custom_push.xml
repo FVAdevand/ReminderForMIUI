@@ -32,8 +32,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/title_notification_text"
-            android:textSize="@dimen/title_notification_text"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
             tools:text="Title" />
 
         <TextView
@@ -43,8 +42,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/message_notification_text"
-            android:textSize="@dimen/message_notification_text"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification"
             tools:text="message" />
     </LinearLayout>
 

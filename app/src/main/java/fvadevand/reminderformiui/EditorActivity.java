@@ -6,11 +6,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.util.Date;
 
@@ -25,6 +27,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private ImageButton mChooseImageButton;
     private int mImageId;
     private InputMethodManager mInputMethodManager;
+    private Toast mToast;
 
     // TODO 2: add AlarmManager to send notification. Send notification after some time.
 
@@ -64,26 +67,40 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             }
 
             case R.id.send_button: {
-                saveNotification();
-                mTitleET.setText("");
-                mMessageET.setText("");
+                if (saveNotification()) {
+                    mTitleET.setText("");
+                    mMessageET.setText("");
+                }
                 mTitleET.requestFocus();
                 mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
                 break;
             }
 
             case R.id.send_close_button: {
-                saveNotification();
-                finishAffinity();
+                if (saveNotification()) {
+                    finishAffinity();
+                    break;
+                }
+                mTitleET.requestFocus();
+                mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
+                break;
             }
         }
     }
 
-    private void saveNotification() {
+    private boolean saveNotification() {
 
         // TODO 1: change notificationId on _ID from SQL database
 
         String title = mTitleET.getText().toString().trim();
+
+        if (TextUtils.isEmpty(title)) {
+            if (mToast != null) mToast.cancel();
+            mToast = Toast.makeText(this, "Please, enter title", Toast.LENGTH_SHORT);
+            mToast.show();
+            return false;
+        }
+
         String message = mMessageET.getText().toString().trim();
         int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         NotificationDbHelper dbHelper = new NotificationDbHelper(this);
@@ -100,6 +117,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         if (savedRowId > 0) {
             ReminderUtils.sendNotification(this, notificationId, mImageId, title, message);
         }
+        return true;
     }
 
     @Override

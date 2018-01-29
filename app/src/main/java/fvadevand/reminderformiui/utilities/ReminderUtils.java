@@ -130,7 +130,6 @@ public class ReminderUtils {
                 .setSmallIcon(getMonocolorImageId(imageId))
                 .setContent(notificationView)
                 .setContentIntent(startActivityPendingIntent)
-//                .setAutoCancel(true)
                 .setOngoing(true)
                 .build();
 
