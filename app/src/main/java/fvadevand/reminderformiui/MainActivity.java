@@ -1,6 +1,10 @@
 package fvadevand.reminderformiui;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -8,10 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 
-    // TODO 3: add list notification (saved and planned notification)
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int NOTIFICATIONS_LOADER_ID = 145;
+    NotificationAdapter mCursorAdapter;
+
+
+    // TODO: add list notification (saved and planned notification)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, EditorActivity.class));
             }
         });
+
+        ListView notificationListView = findViewById(R.id.lv_notifications);
+        View emptyView = findViewById(R.id.empty_view);
+        notificationListView.setEmptyView(emptyView);
+        mCursorAdapter = new NotificationAdapter(this, null);
+        notificationListView.setAdapter(mCursorAdapter);
+
+        getLoaderManager().initLoader(NOTIFICATIONS_LOADER_ID, null, this);
     }
 
     @Override
@@ -44,5 +63,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this,
+                NotificationEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
     }
 }

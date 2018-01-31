@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- TODO 4: change activity first run in application -->
+        <!-- TODO: change activity first run in application -->
         <activity
             android:name=".EditorActivity"
             android:label="@string/edit_mode_name"
@@ -38,6 +38,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <provider
+            android:name=".data.NotificationProvider"
+            android:authorities="fvadevand.reminderformiui"
+            android:exported="false" />
     </application>
 
 </manifest>

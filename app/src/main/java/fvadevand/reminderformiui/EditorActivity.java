@@ -1,9 +1,10 @@
 package fvadevand.reminderformiui;
 
 import android.app.DialogFragment;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -14,10 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.util.Date;
-
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
-import fvadevand.reminderformiui.data.NotificationDbHelper;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener, ImageGridDialogFragment.ImageGridDialogListener {
@@ -29,7 +27,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private InputMethodManager mInputMethodManager;
     private Toast mToast;
 
-    // TODO 2: add AlarmManager to send notification. Send notification after some time.
+    // TODO: add AlarmManager to send notification. Send notification after some time.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +41,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         Button sendCloseButton = findViewById(R.id.send_close_button);
         sendCloseButton.setOnClickListener(this);
+
+        // TODO: add a Shared Preferences.
 
         mImageId = R.drawable.add_color;
         mChooseImageButton = findViewById(R.id.notification_icon_IB);
@@ -90,8 +90,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     private boolean saveNotification() {
 
-        // TODO 1: change notificationId on _ID from SQL database
-
         String title = mTitleET.getText().toString().trim();
 
         if (TextUtils.isEmpty(title)) {
@@ -102,19 +100,14 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         String message = mMessageET.getText().toString().trim();
-        int notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        NotificationDbHelper dbHelper = new NotificationDbHelper(this);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
         ContentValues contentValues = new ContentValues();
-        contentValues.put(NotificationEntry.COLUMN_NOTIFICATIONS_ID, notificationId);
         contentValues.put(NotificationEntry.COLUMN_IMAGE_ID, mImageId);
         contentValues.put(NotificationEntry.COLUMN_TITLE, title);
         contentValues.put(NotificationEntry.COLUMN_MESSAGE, message);
-        long savedRowId = db.insert(
-                NotificationEntry.TABLE_NAME,
-                null,
-                contentValues);
-        if (savedRowId > 0) {
+        Uri contentUri = getContentResolver().insert(NotificationEntry.CONTENT_URI, contentValues);
+        if (contentUri != null) {
+            int notificationId = (int) ContentUris.parseId(contentUri);
             ReminderUtils.sendNotification(this, notificationId, mImageId, title, message);
         }
         return true;

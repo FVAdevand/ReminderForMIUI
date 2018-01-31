@@ -7,4 +7,6 @@
     <string name="notifications_edit_message">Enter message</string>
     <string name="btn_send_close">send and close</string>
     <string name="name_choose_image">Choose icon</string>
+    <string name="empty_view_title_text">There are no entries yet</string>
+    <string name="empty_view_subtitle_text">Get started by adding a notification</string>
 </resources>

@@ -1,11 +1,11 @@
 package fvadevand.reminderformiui.service;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
-import fvadevand.reminderformiui.data.NotificationDbHelper;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 /**
@@ -29,17 +29,15 @@ public class NotificationTask {
     }
 
     private static void resendNotification(Context context) {
-        NotificationDbHelper dbHelper = new NotificationDbHelper(context);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(NotificationEntry.TABLE_NAME,
-                null,
-                null,
+        Cursor cursor = context.getContentResolver().query(
+                NotificationEntry.CONTENT_URI,
                 null,
                 null,
                 null,
                 null);
+
         while (cursor.moveToNext()) {
-            int notificationId = cursor.getInt(cursor.getColumnIndex(NotificationEntry.COLUMN_NOTIFICATIONS_ID));
+            int notificationId = cursor.getInt(cursor.getColumnIndex(NotificationEntry._ID));
             int imageId = cursor.getInt(cursor.getColumnIndex(NotificationEntry.COLUMN_IMAGE_ID));
             String title = cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_TITLE));
             String message = cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_MESSAGE));
@@ -49,14 +47,12 @@ public class NotificationTask {
     }
 
     private static void deleteNotification(Context context, int rowId) {
-        NotificationDbHelper dbHelper = new NotificationDbHelper(context);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String selection = NotificationEntry.COLUMN_NOTIFICATIONS_ID + " LIKE ?";
-        String[] selectionArgs = {String.valueOf(rowId)};
-        int deletedRows = db.delete(NotificationEntry.TABLE_NAME,
-                selection,
-                selectionArgs);
-        if (deletedRows > 0) {
+
+        Uri uri = ContentUris.withAppendedId(NotificationEntry.CONTENT_URI, rowId);
+
+        int rowsDeleted = context.getContentResolver().delete(uri, null, null);
+
+        if (rowsDeleted > 0) {
             ReminderUtils.deleteNotification(context, rowId);
         }
     }
