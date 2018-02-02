@@ -1,6 +1,7 @@
 package fvadevand.reminderformiui;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -12,9 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
+import fvadevand.reminderformiui.service.NotificationIntentService;
+import fvadevand.reminderformiui.service.NotificationTask;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -46,6 +50,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         notificationListView.setAdapter(mCursorAdapter);
 
         getLoaderManager().initLoader(NOTIFICATIONS_LOADER_ID, null, this);
+
+        notificationListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent editIntent = new Intent(MainActivity.this, EditorActivity.class);
+                editIntent.setData(ContentUris.withAppendedId(NotificationEntry.CONTENT_URI, id));
+                startActivity(editIntent);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -60,8 +74,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_resend) {
+            Intent serviceIntent = new Intent(this, NotificationIntentService.class);
+            serviceIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATION);
+            startService(serviceIntent);
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

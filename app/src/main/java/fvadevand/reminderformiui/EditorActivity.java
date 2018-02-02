@@ -1,9 +1,13 @@
 package fvadevand.reminderformiui;
 
 import android.app.DialogFragment;
+import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,14 +22,19 @@ import android.widget.Toast;
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
-public class EditorActivity extends AppCompatActivity implements View.OnClickListener, ImageGridDialogFragment.ImageGridDialogListener {
+public class EditorActivity extends AppCompatActivity implements View.OnClickListener,
+        ImageGridDialogFragment.ImageGridDialogListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int EXISTING_NOTIFICATION_LOADER_ID = 36;
     private EditText mTitleET;
     private EditText mMessageET;
     private ImageButton mChooseImageButton;
     private int mImageId;
     private InputMethodManager mInputMethodManager;
     private Toast mToast;
+    private Uri mCurrentNotificationUri;
+    private boolean isEditMode;
 
     // TODO: add AlarmManager to send notification. Send notification after some time.
 
@@ -33,6 +42,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        mCurrentNotificationUri = getIntent().getData();
+        isEditMode = (mCurrentNotificationUri != null);
+        if (isEditMode) {
+            setTitle(R.string.editor_activity_title_edit_mode);
+            getLoaderManager().initLoader(EXISTING_NOTIFICATION_LOADER_ID, null, this);
+        } else {
+            setTitle(R.string.editor_activity_title_new_mode);
+        }
 
         mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -67,7 +85,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             }
 
             case R.id.send_button: {
-                if (saveNotification()) {
+                if (notifyNotification()) {
                     mTitleET.setText("");
                     mMessageET.setText("");
                 }
@@ -77,7 +95,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             }
 
             case R.id.send_close_button: {
-                if (saveNotification()) {
+                if (notifyNotification()) {
                     finishAffinity();
                     break;
                 }
@@ -88,7 +106,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private boolean saveNotification() {
+    private boolean notifyNotification() {
 
         String title = mTitleET.getText().toString().trim();
 
@@ -105,11 +123,25 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         contentValues.put(NotificationEntry.COLUMN_IMAGE_ID, mImageId);
         contentValues.put(NotificationEntry.COLUMN_TITLE, title);
         contentValues.put(NotificationEntry.COLUMN_MESSAGE, message);
-        Uri contentUri = getContentResolver().insert(NotificationEntry.CONTENT_URI, contentValues);
-        if (contentUri != null) {
-            int notificationId = (int) ContentUris.parseId(contentUri);
-            ReminderUtils.sendNotification(this, notificationId, mImageId, title, message);
+
+        Uri contentUri;
+        if (isEditMode) {
+            contentUri = mCurrentNotificationUri;
+            int rowsUpdated = getContentResolver().update(contentUri, contentValues, null, null);
+            if (rowsUpdated == 0) {
+                return false;
+            }
+            isEditMode = false;
+            setTitle(R.string.editor_activity_title_new_mode);
+            getLoaderManager().getLoader(EXISTING_NOTIFICATION_LOADER_ID).reset();
+        } else {
+            contentUri = getContentResolver().insert(NotificationEntry.CONTENT_URI, contentValues);
+            if (contentUri == null) {
+                return false;
+            }
         }
+        int notificationId = (int) ContentUris.parseId(contentUri);
+        ReminderUtils.sendNotification(this, notificationId, mImageId, title, message);
         return true;
     }
 
@@ -120,4 +152,34 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this,
+                mCurrentNotificationUri,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor == null || cursor.getCount() < 1) {
+            return;
+        }
+        if (cursor.moveToFirst()) {
+            mTitleET.setText(cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_TITLE)));
+            mMessageET.setText(cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_MESSAGE)));
+            mImageId = cursor.getInt(cursor.getColumnIndex(NotificationEntry.COLUMN_IMAGE_ID));
+            mChooseImageButton.setImageResource(mImageId);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mTitleET.setText("");
+        mMessageET.setText("");
+        mImageId = R.drawable.add_color;
+        mChooseImageButton.setImageResource(mImageId);
+    }
 }

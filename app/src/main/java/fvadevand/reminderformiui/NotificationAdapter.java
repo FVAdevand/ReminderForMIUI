@@ -66,6 +66,6 @@ public class NotificationAdapter extends CursorAdapter {
                 v.getContext().startService(serviceIntent);
             }
         });
-
+        deleteButton.setFocusable(false);
     }
 }
