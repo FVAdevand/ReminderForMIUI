@@ -3,6 +3,7 @@ package fvadevand.reminderformiui;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +65,8 @@ public class NotificationAdapter extends CursorAdapter {
                 serviceIntent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
                 serviceIntent.putExtra(ReminderUtils.KEY_NOTIFICATION_ID, notificationId);
                 v.getContext().startService(serviceIntent);
+                Snackbar snackbar = Snackbar.make(lv, "deleted notification", Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
         deleteButton.setFocusable(false);

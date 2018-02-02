@@ -62,7 +62,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         // TODO: add a Shared Preferences.
 
-        mImageId = R.drawable.add_color;
+        mImageId = R.drawable.checked_color;
         mChooseImageButton = findViewById(R.id.notification_icon_IB);
         mChooseImageButton.setImageResource(mImageId);
         mChooseImageButton.setOnClickListener(this);
