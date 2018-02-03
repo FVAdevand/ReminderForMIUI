@@ -23,7 +23,7 @@ public class ImageGridDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.dialog_image_grid, null);
+        View rootView = inflater.inflate(R.layout.dialog_image_grid, container, false);
         GridView imageGV = rootView.findViewById(R.id.image_GV);
         final Adapter adapter = new ImageAdapter(getActivity());
         imageGV.setAdapter((ListAdapter) adapter);
@@ -41,10 +41,12 @@ public class ImageGridDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (ImageGridDialogListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
+        if (mListener == null) {
+            try {
+                mListener = (ImageGridDialogListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
+            }
         }
     }
 
@@ -52,6 +54,10 @@ public class ImageGridDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NO_TITLE, 0);
+    }
+
+    public void setOnImageGridDialogListener(ImageGridDialogListener listener) {
+        mListener = listener;
     }
 
     public interface ImageGridDialogListener {

@@ -20,7 +20,7 @@ import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 
 public class NotificationProvider extends ContentProvider {
 
-    public static final String LOG_TAG = NotificationProvider.class.getSimpleName();
+    private static final String LOG_TAG = NotificationProvider.class.getSimpleName();
     private static final int NOTIFICATIONS = 100;
     private static final int NOTIFICATIONS_ID = 101;
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

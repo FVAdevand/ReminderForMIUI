@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(new Intent(MainActivity.this, EditorActivity.class));
             }
         });
+
+        PreferenceManager.setDefaultValues(this, R.xml.pref_notification, false);
 
         ListView notificationListView = findViewById(R.id.lv_notifications);
         View emptyView = findViewById(R.id.empty_view);
