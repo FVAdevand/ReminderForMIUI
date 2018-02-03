@@ -20,12 +20,12 @@ public class ImagePickerPreference extends Preference implements ImageGridDialog
     private int mImageId;
     private ImageView mIconImageView;
 
-    public ImagePickerPreference(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public ImagePickerPreference(Context context) {
+        this(context, null);
     }
 
-    public ImagePickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public ImagePickerPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
         mImageId = DEFAULT_IMAGE_ID;
         setWidgetLayoutResource(R.layout.image_pref);
     }

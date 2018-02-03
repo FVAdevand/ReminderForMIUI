@@ -67,7 +67,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mImageIdDefault = sharedPreferences.getInt(getString(R.string.pref_image_key), ReminderUtils.getDefaultImageId());
-        isChangeIcon = sharedPreferences.getBoolean(getString(R.string.change_icon_key),
+        isChangeIcon = sharedPreferences.getBoolean(getString(R.string.pref_change_icon_key),
                 getResources().getBoolean(R.bool.change_icon_default));
 
         mImageId = mImageIdDefault;
