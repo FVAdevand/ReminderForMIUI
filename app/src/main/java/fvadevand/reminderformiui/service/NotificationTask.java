@@ -14,8 +14,9 @@ import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 public class NotificationTask {
 
-    public static final String ACTION_RESEND_NOTIFICATION = "resend_notification";
-    public static final String ACTION_DELETE_NOTIFICATION = "delete_notification";
+    public static final String ACTION_RESEND_NOTIFICATION = "fvadevand.reminderformiui.resend_notification";
+    public static final String ACTION_DELETE_NOTIFICATION = "fvadevand.reminderformiui.delete_notification";
+    public static final String ACTION_DELETE_ALL_NOTIFICATION = "fvadevand.reminderformiui.delete_all_notification";
 
     private NotificationTask() {
     }
@@ -25,6 +26,8 @@ public class NotificationTask {
             resendNotification(context);
         } else if (action.equals(ACTION_DELETE_NOTIFICATION)) {
             deleteNotification(context, notificationId);
+        } else if (action.equals(ACTION_DELETE_ALL_NOTIFICATION)) {
+            deleteAllNotifications(context);
         }
     }
 
@@ -54,6 +57,14 @@ public class NotificationTask {
 
         if (rowsDeleted > 0) {
             ReminderUtils.deleteNotification(context, rowId);
+        }
+    }
+
+    private static void deleteAllNotifications(Context context) {
+
+        int rowsDeleted = context.getContentResolver().delete(NotificationEntry.CONTENT_URI, null, null);
+        if (rowsDeleted > 0) {
+            ReminderUtils.deleteAllNotifications(context);
         }
     }
 

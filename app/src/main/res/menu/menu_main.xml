@@ -13,4 +13,11 @@
         android:orderInCategory="101"
         android:title="@string/action_resend"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_delete_all"
+        android:orderInCategory="102"
+        android:title="@string/action_delete_all"
+        app:showAsAction="never" />
+
 </menu>

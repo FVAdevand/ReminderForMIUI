@@ -75,16 +75,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivity(settingsIntent);
-            return true;
-        } else if (id == R.id.action_resend) {
-            Intent serviceIntent = new Intent(this, NotificationIntentService.class);
-            serviceIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATION);
-            startService(serviceIntent);
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
+
+            case R.id.action_resend:
+                Intent serviceResendIntent = new Intent(this, NotificationIntentService.class);
+                serviceResendIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATION);
+                startService(serviceResendIntent);
+                return true;
+
+            case R.id.action_delete_all:
+                Intent serviceDeleteIntent = new Intent(this, NotificationIntentService.class);
+                serviceDeleteIntent.setAction(NotificationTask.ACTION_DELETE_ALL_NOTIFICATION);
+                startService(serviceDeleteIntent);
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -7,16 +7,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.database.Cursor;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -37,6 +34,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private EditText mMessageET;
     private ImageButton mChooseImageButton;
     private int mImageId;
+    private int mImageIdDefault;
     private InputMethodManager mInputMethodManager;
     private Toast mToast;
     private Uri mCurrentNotificationUri;
@@ -67,7 +65,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         sendCloseButton.setOnClickListener(this);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mImageId = sharedPreferences.getInt(getString(R.string.pref_image_key), ReminderUtils.getDefaultImageId());
+        mImageIdDefault = sharedPreferences.getInt(getString(R.string.pref_image_key), ReminderUtils.getDefaultImageId());
+
+        mImageId = mImageIdDefault;
         mChooseImageButton = findViewById(R.id.notification_icon_IB);
         mChooseImageButton.setImageResource(mImageId);
         mChooseImageButton.setOnClickListener(this);
@@ -92,6 +92,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 if (notifyNotification()) {
                     mTitleET.setText("");
                     mMessageET.setText("");
+                    mImageId = mImageIdDefault;
+                    mChooseImageButton.setImageResource(mImageId);
                 }
                 mTitleET.requestFocus();
                 mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
@@ -108,25 +110,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            startActivity(settingsIntent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private boolean notifyNotification() {
@@ -200,9 +183,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mTitleET.setText("");
-        mMessageET.setText("");
-        mImageId = R.drawable.add_color;
-        mChooseImageButton.setImageResource(mImageId);
+
     }
 }
