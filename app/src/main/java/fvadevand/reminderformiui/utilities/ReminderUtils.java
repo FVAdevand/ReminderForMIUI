@@ -101,6 +101,10 @@ public class ReminderUtils {
         return thumbIds;
     }
 
+    public static int getDefaultImageId() {
+        return getImageIdArray().keyAt(0);
+    }
+
     private static int getMonocolorImageId(int multicolorImageId) {
         SparseIntArray imageIdArray = getImageIdArray();
         return imageIdArray.get(multicolorImageId);

@@ -8,10 +8,15 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -27,6 +32,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int EXISTING_NOTIFICATION_LOADER_ID = 36;
+    private static final String LOG_TAG = EditorActivity.class.getSimpleName();
     private EditText mTitleET;
     private EditText mMessageET;
     private ImageButton mChooseImageButton;
@@ -60,9 +66,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         Button sendCloseButton = findViewById(R.id.send_close_button);
         sendCloseButton.setOnClickListener(this);
 
-        // TODO: add a Shared Preferences.
-
-        mImageId = R.drawable.checked_color;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mImageId = sharedPreferences.getInt(getString(R.string.pref_image_key), ReminderUtils.getDefaultImageId());
         mChooseImageButton = findViewById(R.id.notification_icon_IB);
         mChooseImageButton.setImageResource(mImageId);
         mChooseImageButton.setOnClickListener(this);
@@ -70,7 +75,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         mTitleET = findViewById(R.id.title_ET);
         mMessageET = findViewById(R.id.message_ET);
         mTitleET.requestFocus();
-
     }
 
     @Override
@@ -104,6 +108,25 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean notifyNotification() {
