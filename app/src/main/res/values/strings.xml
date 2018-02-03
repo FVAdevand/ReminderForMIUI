@@ -15,4 +15,8 @@
     <string name="pref_image_summary">choose default icon</string>
     <string name="action_resend">Resend all</string>
     <string name="action_delete_all">Delete all notification</string>
+    <string name="change_icon_key">change_icon</string>
+    <string name="change_icon_summary_on">change</string>
+    <string name="change_icon_summary_off">don\'t change</string>
+    <string name="change_icon_title">Icon after send notification</string>
 </resources>

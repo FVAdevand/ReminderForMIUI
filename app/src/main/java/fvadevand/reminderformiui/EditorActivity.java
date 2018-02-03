@@ -30,6 +30,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     private static final int EXISTING_NOTIFICATION_LOADER_ID = 36;
     private static final String LOG_TAG = EditorActivity.class.getSimpleName();
+    boolean isChangeIcon;
     private EditText mTitleET;
     private EditText mMessageET;
     private ImageButton mChooseImageButton;
@@ -66,6 +67,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mImageIdDefault = sharedPreferences.getInt(getString(R.string.pref_image_key), ReminderUtils.getDefaultImageId());
+        isChangeIcon = sharedPreferences.getBoolean(getString(R.string.change_icon_key),
+                getResources().getBoolean(R.bool.change_icon_default));
 
         mImageId = mImageIdDefault;
         mChooseImageButton = findViewById(R.id.notification_icon_IB);
@@ -90,10 +93,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.send_button: {
                 if (notifyNotification()) {
-                    mTitleET.setText("");
-                    mMessageET.setText("");
-                    mImageId = mImageIdDefault;
-                    mChooseImageButton.setImageResource(mImageId);
+                    clearFields();
                 }
                 mTitleET.requestFocus();
                 mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
@@ -149,6 +149,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         int notificationId = (int) ContentUris.parseId(contentUri);
         ReminderUtils.sendNotification(this, notificationId, mImageId, title, message);
         return true;
+    }
+
+    private void clearFields() {
+        mTitleET.setText("");
+        mMessageET.setText("");
+        if (isChangeIcon) {
+            mImageId = mImageIdDefault;
+            mChooseImageButton.setImageResource(mImageId);
+        }
     }
 
     @Override

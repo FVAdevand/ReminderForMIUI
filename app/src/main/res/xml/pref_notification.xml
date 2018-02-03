@@ -4,4 +4,12 @@
         android:key="@string/pref_image_key"
         android:summary="@string/pref_image_summary"
         android:title="@string/pref_image_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/change_icon_default"
+        android:key="@string/change_icon_key"
+        android:summaryOff="@string/change_icon_summary_off"
+        android:summaryOn="@string/change_icon_summary_on"
+        android:title="@string/change_icon_title" />
+
 </PreferenceScreen>
