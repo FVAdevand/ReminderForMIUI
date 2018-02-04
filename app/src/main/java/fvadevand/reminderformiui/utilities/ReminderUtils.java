@@ -110,6 +110,7 @@ public class ReminderUtils {
         return imageIdArray.get(multicolorImageId);
     }
 
+    // TODO: fix notification for android OREO.
     public static void sendNotification(Context context, int notificationId, int imageId, String title, String message) {
 
         RemoteViews notificationView = new RemoteViews(context.getPackageName(), R.layout.custom_push);

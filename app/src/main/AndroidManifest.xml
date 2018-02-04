@@ -25,7 +25,6 @@
         <activity
             android:name=".EditorActivity"
             android:label="@string/editor_activity_title_edit_mode"
-            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="stateVisible" />
 

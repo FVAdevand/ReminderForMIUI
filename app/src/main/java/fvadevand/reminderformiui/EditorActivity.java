@@ -147,7 +147,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
         int notificationId = (int) ContentUris.parseId(contentUri);
-        ReminderUtils.sendNotification(this, notificationId, mImageId, title, message);
+        ReminderUtils.sendNotification(getApplicationContext(), notificationId, mImageId, title, message);
         return true;
     }
 
@@ -164,7 +164,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     public void onImageItemClick(int resourceId) {
         mImageId = resourceId;
         mChooseImageButton.setImageResource(resourceId);
-        mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
     }
 
     @Override

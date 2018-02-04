@@ -41,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View gridItemView = convertView;
         if (gridItemView == null) {
-            gridItemView = LayoutInflater.from(mContext).inflate(R.layout.image_grid_item, null);
+            gridItemView = LayoutInflater.from(mContext).inflate(R.layout.image_grid_item, parent, false);
         }
         ImageView imageView = gridItemView.findViewById(R.id.grid_item_IV);
         imageView.setImageResource(mThumbIds[position]);
