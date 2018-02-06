@@ -3,9 +3,9 @@ package fvadevand.reminderformiui;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -22,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
+import fvadevand.reminderformiui.service.NotificationIntentService;
+import fvadevand.reminderformiui.service.NotificationTask;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener,
@@ -125,29 +127,25 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         String message = mMessageET.getText().toString().trim();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(NotificationEntry.COLUMN_IMAGE_ID, mImageId);
-        contentValues.put(NotificationEntry.COLUMN_TITLE, title);
-        contentValues.put(NotificationEntry.COLUMN_MESSAGE, message);
+        Bundle notificationBundle = new Bundle();
+        notificationBundle.putString(NotificationEntry.COLUMN_TITLE, title);
+        notificationBundle.putString(NotificationEntry.COLUMN_MESSAGE, message);
+        notificationBundle.putInt(NotificationEntry.COLUMN_IMAGE_ID, mImageId);
 
-        Uri contentUri;
+        Intent serviceIntent = new Intent(this, NotificationIntentService.class);
+
         if (isEditMode) {
-            contentUri = mCurrentNotificationUri;
-            int rowsUpdated = getContentResolver().update(contentUri, contentValues, null, null);
-            if (rowsUpdated == 0) {
-                return false;
-            }
+            serviceIntent.setAction(NotificationTask.ACTION_UPDATE_NOTIFICATION);
+            notificationBundle.putInt(NotificationEntry._ID, (int) ContentUris.parseId(mCurrentNotificationUri));
             isEditMode = false;
             setTitle(R.string.editor_activity_title_new_mode);
             getLoaderManager().getLoader(EXISTING_NOTIFICATION_LOADER_ID).reset();
         } else {
-            contentUri = getContentResolver().insert(NotificationEntry.CONTENT_URI, contentValues);
-            if (contentUri == null) {
-                return false;
-            }
+            serviceIntent.setAction(NotificationTask.ACTION_SEND_NOTIFICATION);
         }
-        int notificationId = (int) ContentUris.parseId(contentUri);
-        ReminderUtils.sendNotification(getApplicationContext(), notificationId, mImageId, title, message);
+
+        serviceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationBundle);
+        startService(serviceIntent);
         return true;
     }
 

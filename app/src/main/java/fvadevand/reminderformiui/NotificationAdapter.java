@@ -3,6 +3,7 @@ package fvadevand.reminderformiui;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 import fvadevand.reminderformiui.service.NotificationIntentService;
 import fvadevand.reminderformiui.service.NotificationTask;
-import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 /**
  * Displays list of notifications that were entered and stored in the app.
@@ -63,7 +63,11 @@ public class NotificationAdapter extends CursorAdapter {
                 int notificationId = (int) getItemId(position);
                 Intent serviceIntent = new Intent(v.getContext(), NotificationIntentService.class);
                 serviceIntent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
-                serviceIntent.putExtra(ReminderUtils.KEY_NOTIFICATION_ID, notificationId);
+
+                Bundle notificationBundle = new Bundle();
+                notificationBundle.putInt(NotificationEntry._ID, notificationId);
+
+                serviceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationBundle);
                 v.getContext().startService(serviceIntent);
                 Snackbar snackbar = Snackbar.make(lv, "deleted notification", Snackbar.LENGTH_SHORT);
                 snackbar.show();

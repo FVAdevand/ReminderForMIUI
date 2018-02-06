@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseIntArray;
 import android.view.View;
@@ -14,6 +15,7 @@ import java.lang.reflect.Field;
 
 import fvadevand.reminderformiui.MainActivity;
 import fvadevand.reminderformiui.R;
+import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 import fvadevand.reminderformiui.service.NotificationIntentService;
 import fvadevand.reminderformiui.service.NotificationTask;
 
@@ -127,7 +129,11 @@ public class ReminderUtils {
 
         Intent startServiceIntent = new Intent(context, NotificationIntentService.class);
         startServiceIntent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
-        startServiceIntent.putExtra(KEY_NOTIFICATION_ID, notificationId);
+
+        Bundle notificationBundle = new Bundle();
+        notificationBundle.putInt(NotificationEntry._ID, notificationId);
+
+        startServiceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationBundle);
         PendingIntent startServicePendingIntent = PendingIntent.getService(context, notificationId, startServiceIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.delete_button, startServicePendingIntent);
 
