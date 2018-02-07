@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -42,6 +43,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private Toast mToast;
     private Uri mCurrentNotificationUri;
     private boolean isEditMode;
+    private TextInputLayout mTitleInputLayout;
 
     // TODO: add AlarmManager to send notification. Send notification after some time.
 
@@ -61,11 +63,13 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        Button sendButton = findViewById(R.id.send_button);
+        Button sendButton = findViewById(R.id.btn_send);
         sendButton.setOnClickListener(this);
 
-        Button sendCloseButton = findViewById(R.id.send_close_button);
+        Button sendCloseButton = findViewById(R.id.btn_send_close);
         sendCloseButton.setOnClickListener(this);
+
+        mTitleInputLayout = findViewById(R.id.et_layout_title);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mImageIdDefault = sharedPreferences.getInt(getString(R.string.pref_image_key), ReminderUtils.getDefaultImageId());
@@ -73,12 +77,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 getResources().getBoolean(R.bool.change_icon_default));
 
         mImageId = mImageIdDefault;
-        mChooseImageButton = findViewById(R.id.notification_icon_IB);
+        mChooseImageButton = findViewById(R.id.ibtn_notification_icon);
         mChooseImageButton.setImageResource(mImageId);
         mChooseImageButton.setOnClickListener(this);
 
-        mTitleET = findViewById(R.id.title_ET);
-        mMessageET = findViewById(R.id.message_ET);
+        ImageButton alarmSetButton = findViewById(R.id.ibtn_alarm);
+        alarmSetButton.setOnClickListener(this);
+
+        mTitleET = findViewById(R.id.et_title);
+        mMessageET = findViewById(R.id.et_message);
         mTitleET.requestFocus();
     }
 
@@ -87,30 +94,34 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
         switch (view.getId()) {
 
-            case R.id.notification_icon_IB: {
+            case R.id.ibtn_notification_icon:
                 DialogFragment dialog = new ImageGridDialogFragment();
                 dialog.show(getFragmentManager(), "ImageGridDialog");
                 break;
-            }
 
-            case R.id.send_button: {
+            case R.id.ibtn_alarm:
+                DialogFragment dialogAlarm = new AlarmSetDialogFragment();
+                dialogAlarm.show(getFragmentManager(), "AlarmSetDialog");
+                break;
+
+            case R.id.btn_send:
                 if (notifyNotification()) {
+                    mTitleInputLayout.setError(null);
                     clearFields();
                 }
                 mTitleET.requestFocus();
                 mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
                 break;
-            }
 
-            case R.id.send_close_button: {
+            case R.id.btn_send_close:
                 if (notifyNotification()) {
+                    mTitleInputLayout.setError(null);
                     finishAffinity();
                     break;
                 }
                 mTitleET.requestFocus();
                 mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
                 break;
-            }
         }
     }
 
@@ -119,9 +130,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         String title = mTitleET.getText().toString().trim();
 
         if (TextUtils.isEmpty(title)) {
-            if (mToast != null) mToast.cancel();
-            mToast = Toast.makeText(this, "Please, enter title", Toast.LENGTH_SHORT);
-            mToast.show();
+            mTitleInputLayout.setError(getString(R.string.error_enter_title));
             return false;
         }
 

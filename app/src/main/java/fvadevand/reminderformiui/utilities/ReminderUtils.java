@@ -35,7 +35,7 @@ public class ReminderUtils {
         imageIdArray.put(R.drawable.add_color, R.drawable.add);
         imageIdArray.put(R.drawable.agenda_color, R.drawable.agenda);
         imageIdArray.put(R.drawable.alarm_color, R.drawable.alarm);
-        imageIdArray.put(R.drawable.alarm_clock_color, R.drawable.alarm_clock);
+//        imageIdArray.put(R.drawable.alarm_clock_color, R.drawable.alarm_clock);
         imageIdArray.put(R.drawable.archive_color, R.drawable.archive);
         imageIdArray.put(R.drawable.attachment_color, R.drawable.attachment);
         imageIdArray.put(R.drawable.battery_color, R.drawable.battery);
