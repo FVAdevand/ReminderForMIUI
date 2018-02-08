@@ -5,4 +5,7 @@
     <dimen name="title_notification_text">16sp</dimen>
     <dimen name="message_notification_text">14sp</dimen>
     <dimen name="push_image_padding">6dp</dimen>
+    <dimen name="margin_edge_dialog_item">24dp</dimen>
+    <dimen name="margin_top_dialog_item">20dp</dimen>
+    <dimen name="margin_bottom_dialog_item">24dp</dimen>
 </resources>

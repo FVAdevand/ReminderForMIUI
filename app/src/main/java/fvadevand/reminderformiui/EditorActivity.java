@@ -15,12 +15,14 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
+
+import java.util.Calendar;
 
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 import fvadevand.reminderformiui.service.NotificationIntentService;
@@ -28,7 +30,8 @@ import fvadevand.reminderformiui.service.NotificationTask;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener,
-        ImageGridDialogFragment.ImageGridDialogListener,
+        IconPickerDialog.onIconSetListener,
+        AlarmSetDialog.OnAlarmSetListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int EXISTING_NOTIFICATION_LOADER_ID = 36;
@@ -40,7 +43,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private int mImageId;
     private int mImageIdDefault;
     private InputMethodManager mInputMethodManager;
-    private Toast mToast;
     private Uri mCurrentNotificationUri;
     private boolean isEditMode;
     private TextInputLayout mTitleInputLayout;
@@ -95,12 +97,12 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
 
             case R.id.ibtn_notification_icon:
-                DialogFragment dialog = new ImageGridDialogFragment();
+                DialogFragment dialog = new IconPickerDialog();
                 dialog.show(getFragmentManager(), "ImageGridDialog");
                 break;
 
             case R.id.ibtn_alarm:
-                DialogFragment dialogAlarm = new AlarmSetDialogFragment();
+                DialogFragment dialogAlarm = new AlarmSetDialog();
                 dialogAlarm.show(getFragmentManager(), "AlarmSetDialog");
                 break;
 
@@ -168,7 +170,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void onImageItemClick(int resourceId) {
+    public void onIconSet(int resourceId) {
         mImageId = resourceId;
         mChooseImageButton.setImageResource(resourceId);
     }
@@ -199,5 +201,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onAlarmSet(Calendar calendar) {
+        Log.i(LOG_TAG, "Alarm set: " + calendar);
     }
 }

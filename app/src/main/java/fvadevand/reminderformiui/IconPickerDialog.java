@@ -1,5 +1,6 @@
 package fvadevand.reminderformiui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -14,16 +15,17 @@ import android.widget.ListAdapter;
 
 /**
  * Created by Vladimir on 25.12.2017.
+ *
  */
 
-public class ImageGridDialogFragment extends DialogFragment {
+public class IconPickerDialog extends DialogFragment {
 
-    ImageGridDialogListener mListener;
+    onIconSetListener mListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-        View rootView = layoutInflater.inflate(R.layout.dialog_image_grid, null);
+        @SuppressLint("InflateParams") View rootView = layoutInflater.inflate(R.layout.dialog_image_grid, null);
 
         GridView imageGV = rootView.findViewById(R.id.image_GV);
         final Adapter adapter = new ImageAdapter(getActivity());
@@ -31,7 +33,7 @@ public class ImageGridDialogFragment extends DialogFragment {
         imageGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mListener.onImageItemClick((int) adapter.getItem(position));
+                mListener.onIconSet((int) adapter.getItem(position));
                 dismiss();
             }
         });
@@ -41,47 +43,23 @@ public class ImageGridDialogFragment extends DialogFragment {
                 .create();
     }
 
-    //    @Nullable
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-//        View rootView = inflater.inflate(R.layout.dialog_image_grid, container, false);
-//        GridView imageGV = rootView.findViewById(R.id.image_GV);
-//        final Adapter adapter = new ImageAdapter(getActivity());
-//        imageGV.setAdapter((ListAdapter) adapter);
-//        imageGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                mListener.onImageItemClick((int) adapter.getItem(position));
-//                dismiss();
-//            }
-//        });
-//
-//        return rootView;
-//    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (mListener == null) {
             try {
-                mListener = (ImageGridDialogListener) activity;
+                mListener = (onIconSetListener) activity;
             } catch (ClassCastException e) {
                 throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
             }
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(STYLE_NO_TITLE, 0);
-    }
-
-    public void setOnImageGridDialogListener(ImageGridDialogListener listener) {
+    public void setOnIconSetListener(onIconSetListener listener) {
         mListener = listener;
     }
 
-    public interface ImageGridDialogListener {
-        void onImageItemClick(int resourceId);
+    public interface onIconSetListener {
+        void onIconSet(int resourceId);
     }
 }

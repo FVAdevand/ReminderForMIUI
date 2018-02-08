@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,6 +9,9 @@
         android:id="@+id/tv_time_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_edge_dialog_item"
+        android:layout_marginStart="@dimen/margin_edge_dialog_item"
+        android:layout_marginTop="@dimen/margin_top_dialog_item"
         android:text="@string/edit_mode_time_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -15,13 +19,18 @@
         android:id="@+id/tv_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="11:30"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_marginEnd="@dimen/margin_edge_dialog_item"
+        android:layout_marginStart="@dimen/margin_edge_dialog_item"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        tools:text="11:30" />
 
     <TextView
         android:id="@+id/tv_date_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/margin_edge_dialog_item"
+        android:layout_marginStart="@dimen/margin_edge_dialog_item"
+        android:layout_marginTop="@dimen/margin_top_dialog_item"
         android:text="@string/edit_mode_date_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -29,7 +38,10 @@
         android:id="@+id/tv_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="06-02-2018"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_marginBottom="@dimen/margin_bottom_dialog_item"
+        android:layout_marginEnd="@dimen/margin_edge_dialog_item"
+        android:layout_marginStart="@dimen/margin_edge_dialog_item"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        tools:text="06-02-2018" />
 
 </LinearLayout>

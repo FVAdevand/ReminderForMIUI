@@ -7,6 +7,8 @@
     <string name="action_delete_all">Delete all notification</string>
     <string name="btn_send">send</string>
     <string name="btn_send_close">send and close</string>
+    <string name="btn_set">Set</string>
+    <string name="btn_cancel">Cancel</string>
     <string name="notification_edit_title">Enter title</string>
     <string name="notifications_edit_message">Enter message</string>
     <string name="empty_view_title_text">There are no entries yet</string>
@@ -22,5 +24,6 @@
     <string name="edit_mode_time_label">Choose time</string>
     <string name="edit_mode_date_label">Choose date</string>
     <string name="alarm_dialog_title">Time alarm</string>
-    <string name="ok">ok</string>
+    <string name="format_time">HH:mm</string>
+    <string name="formate_date">EEE, dd MMMM yyyy</string>
 </resources>

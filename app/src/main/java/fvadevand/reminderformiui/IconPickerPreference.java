@@ -13,18 +13,18 @@ import fvadevand.reminderformiui.utilities.ReminderUtils;
  * Created by Vladimir on 31.01.2018.
  */
 
-public class ImagePickerPreference extends Preference implements ImageGridDialogFragment.ImageGridDialogListener {
+public class IconPickerPreference extends Preference implements IconPickerDialog.onIconSetListener {
 
-    private static final String LOG_TAG = ImagePickerPreference.class.getSimpleName();
+    private static final String LOG_TAG = IconPickerPreference.class.getSimpleName();
     private static final int DEFAULT_IMAGE_ID = ReminderUtils.getDefaultImageId();
     private int mImageId;
     private ImageView mIconImageView;
 
-    public ImagePickerPreference(Context context) {
+    public IconPickerPreference(Context context) {
         this(context, null);
     }
 
-    public ImagePickerPreference(Context context, AttributeSet attrs) {
+    public IconPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         mImageId = DEFAULT_IMAGE_ID;
         setWidgetLayoutResource(R.layout.image_pref);
@@ -50,13 +50,13 @@ public class ImagePickerPreference extends Preference implements ImageGridDialog
     protected void onClick() {
         super.onClick();
         Activity activity = (Activity) getContext();
-        ImageGridDialogFragment dialog = new ImageGridDialogFragment();
-        dialog.setOnImageGridDialogListener(this);
+        IconPickerDialog dialog = new IconPickerDialog();
+        dialog.setOnIconSetListener(this);
         dialog.show(activity.getFragmentManager(), "ImageGridDialog");
     }
 
     @Override
-    public void onImageItemClick(int resourceId) {
+    public void onIconSet(int resourceId) {
         persistInt(resourceId);
         mImageId = resourceId;
         mIconImageView.setImageResource(mImageId);
