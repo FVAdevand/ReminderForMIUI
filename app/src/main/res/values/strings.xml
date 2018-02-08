@@ -9,21 +9,23 @@
     <string name="btn_send_close">send and close</string>
     <string name="btn_set">Set</string>
     <string name="btn_cancel">Cancel</string>
-    <string name="notification_edit_title">Enter title</string>
-    <string name="notifications_edit_message">Enter message</string>
+    <string name="notification_title_hint">Enter title</string>
+    <string name="notification_message_hint">Enter message</string>
     <string name="empty_view_title_text">There are no entries yet</string>
     <string name="empty_view_subtitle_text">Get started by adding a notification</string>
     <string name="pref_image_key" translatable="false">image</string>
     <string name="pref_image_title">Icon of notification</string>
     <string name="pref_image_summary">choose default icon</string>
-    <string name="pref_change_icon_key">change_icon</string>
+    <string name="pref_change_icon_key" translatable="false">change_icon</string>
     <string name="pref_change_icon_summary_on">change</string>
     <string name="pref_change_icon_summary_off">don\'t change</string>
     <string name="pref_change_icon_title">Icon after send notification</string>
-    <string name="error_enter_title">Please, enter title</string>
+    <string name="error_enter_title">title cannot be empty</string>
     <string name="edit_mode_time_label">Choose time</string>
     <string name="edit_mode_date_label">Choose date</string>
     <string name="alarm_dialog_title">Time alarm</string>
+    <string name="format_full_date">EEEE, dd MMM yyyy</string>
+    <string name="format_short_date">dd.MM.yy</string>
+    <string name="delay_notification">Delay a reminder before %1$s %2$s</string>
     <string name="format_time">HH:mm</string>
-    <string name="formate_date">EEE, dd MMMM yyyy</string>
 </resources>

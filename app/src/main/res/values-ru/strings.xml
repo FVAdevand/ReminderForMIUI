@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Reminder for MIUI</string>
+    <string name="editor_activity_title_new_mode">Новое напоминание</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_delete_all">Удалить все напоминания</string>
+    <string name="btn_send">отправить</string>
+    <string name="btn_send_close">отправить и закрыть</string>
+    <string name="btn_set">Установить</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="notification_title_hint">Введите заголовок</string>
+    <string name="notification_message_hint">Введите описание</string>
+    <string name="error_enter_title">Заголовок не может быть пустым</string>
+    <string name="delay_notification">Отложить напоминание до %1$s %2$s</string>
+    <string name="edit_mode_time_label">время</string>
+    <string name="edit_mode_date_label">дата</string>
+    <string name="alarm_dialog_title">Время напоминания</string>
+    <string name="empty_view_title_text">Пока еще нет напоминаний</string>
+    <string name="empty_view_subtitle_text">добавьте напоминание</string>
+    <string name="editor_activity_title_edit_mode">Редактирование напоминания</string>
+    <string name="action_resend">Показать все напоминания</string>
+</resources>

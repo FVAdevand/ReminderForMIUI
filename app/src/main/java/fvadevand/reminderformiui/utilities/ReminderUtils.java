@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import java.lang.reflect.Field;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import fvadevand.reminderformiui.MainActivity;
 import fvadevand.reminderformiui.R;
@@ -170,5 +174,20 @@ public class ReminderUtils {
     public static void deleteAllNotifications(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
+    }
+
+    public static String formatTime(Context context, Calendar calendar) {
+        Format timeFormat = new SimpleDateFormat(context.getString(R.string.format_time), Locale.getDefault());
+        return timeFormat.format(calendar.getTime());
+    }
+
+    public static String formatFullDate(Context context, Calendar calendar) {
+        Format dateFormat = new SimpleDateFormat(context.getString(R.string.format_full_date), Locale.getDefault());
+        return dateFormat.format(calendar.getTime());
+    }
+
+    public static String formatShortDate(Context context, Calendar calendar) {
+        Format dateFormat = new SimpleDateFormat(context.getString(R.string.format_short_date), Locale.getDefault());
+        return dateFormat.format(calendar.getTime());
     }
 }

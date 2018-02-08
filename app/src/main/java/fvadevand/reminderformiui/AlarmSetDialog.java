@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,14 +18,14 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
+
+import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 
 /**
  * Created by Vladimir on 06.02.2018.
+ *
  */
 
 public class AlarmSetDialog extends DialogFragment {
@@ -38,7 +39,7 @@ public class AlarmSetDialog extends DialogFragment {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             mCalendar.set(Calendar.MINUTE, minute);
-            mTimeTextView.setText(formatTime(mCalendar));
+            mTimeTextView.setText(ReminderUtils.formatTime(view.getContext(), mCalendar));
         }
     };
 
@@ -48,18 +49,19 @@ public class AlarmSetDialog extends DialogFragment {
             mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             mCalendar.set(Calendar.MONTH, month);
             mCalendar.set(Calendar.YEAR, year);
-            mDateTextView.setText(formatDate(mCalendar));
+            mDateTextView.setText(ReminderUtils.formatFullDate(view.getContext(), mCalendar));
         }
     };
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+        Context context = getActivity();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
         @SuppressLint("InflateParams") View rootView = layoutInflater.inflate(R.layout.dialog_alarm, null);
         mCalendar = Calendar.getInstance();
         mTimeTextView = rootView.findViewById(R.id.tv_time);
-        mTimeTextView.setText(formatTime(mCalendar));
+        mTimeTextView.setText(ReminderUtils.formatTime(context, mCalendar));
         mTimeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +77,7 @@ public class AlarmSetDialog extends DialogFragment {
         });
 
         mDateTextView = rootView.findViewById(R.id.tv_date);
-        mDateTextView.setText(formatDate(mCalendar));
+        mDateTextView.setText(ReminderUtils.formatFullDate(context, mCalendar));
         mDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,16 +120,6 @@ public class AlarmSetDialog extends DialogFragment {
                 throw new ClassCastException(activity.toString() + " must implement OnAlarmSetListener");
             }
         }
-    }
-
-    private String formatTime(Calendar calendar) {
-        Format timeFormat = new SimpleDateFormat(getString(R.string.format_time), Locale.getDefault());
-        return timeFormat.format(calendar.getTime());
-    }
-
-    private String formatDate(Calendar calendar) {
-        Format dateFormat = new SimpleDateFormat(getString(R.string.formate_date), Locale.getDefault());
-        return dateFormat.format(calendar.getTime());
     }
 
     public void setOnAlarmSetListener(OnAlarmSetListener listener) {

@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -29,7 +30,8 @@ import fvadevand.reminderformiui.service.NotificationIntentService;
 import fvadevand.reminderformiui.service.NotificationTask;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
-public class EditorActivity extends AppCompatActivity implements View.OnClickListener,
+public class EditorActivity extends AppCompatActivity implements
+        View.OnClickListener,
         IconPickerDialog.onIconSetListener,
         AlarmSetDialog.OnAlarmSetListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -46,6 +48,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private Uri mCurrentNotificationUri;
     private boolean isEditMode;
     private TextInputLayout mTitleInputLayout;
+    private CheckBox mDelayNotificationCheckBox;
+    private Calendar mCalendar;
 
     // TODO: add AlarmManager to send notification. Send notification after some time.
 
@@ -89,6 +93,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         mTitleET = findViewById(R.id.et_title);
         mMessageET = findViewById(R.id.et_message);
         mTitleET.requestFocus();
+
+        mDelayNotificationCheckBox = findViewById(R.id.cb_delay_notification);
+        mDelayNotificationCheckBox.setVisibility(View.INVISIBLE);
+
     }
 
     @Override
@@ -136,6 +144,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             return false;
         }
 
+        if (!mDelayNotificationCheckBox.isChecked()) mCalendar = Calendar.getInstance();
+        Log.i(LOG_TAG, ReminderUtils.formatTime(this, mCalendar));
+
         String message = mMessageET.getText().toString().trim();
 
         Bundle notificationBundle = new Bundle();
@@ -167,6 +178,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             mImageId = mImageIdDefault;
             mChooseImageButton.setImageResource(mImageId);
         }
+        mDelayNotificationCheckBox.setChecked(false);
+        mDelayNotificationCheckBox.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -205,6 +218,12 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onAlarmSet(Calendar calendar) {
-        Log.i(LOG_TAG, "Alarm set: " + calendar);
+        mDelayNotificationCheckBox.setVisibility(View.VISIBLE);
+        mDelayNotificationCheckBox.setChecked(true);
+        String delayTimeString = getString(R.string.delay_notification,
+                ReminderUtils.formatTime(this, calendar),
+                ReminderUtils.formatShortDate(this, calendar));
+        mDelayNotificationCheckBox.setText(delayTimeString);
+        mCalendar = calendar;
     }
 }

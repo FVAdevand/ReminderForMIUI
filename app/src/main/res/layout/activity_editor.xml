@@ -24,7 +24,7 @@
             android:id="@+id/et_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/notification_edit_title"
+            android:hint="@string/notification_title_hint"
             android:inputType="textCapSentences" />
     </android.support.design.widget.TextInputLayout>
 
@@ -42,20 +42,8 @@
             android:id="@+id/et_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/notifications_edit_message" />
+            android:hint="@string/notification_message_hint" />
     </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/btn_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/btn_send"
-        app:layout_constraintEnd_toStartOf="@+id/btn_send_close"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_layout_message" />
 
     <ImageButton
         android:id="@+id/ibtn_notification_icon"
@@ -70,16 +58,6 @@
         app:layout_constraintTop_toTopOf="@+id/et_layout_title"
         app:srcCompat="@drawable/add_color" />
 
-    <Button
-        android:id="@+id/btn_send_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_send_close"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_send"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_send" />
-
     <ImageButton
         android:id="@+id/ibtn_alarm"
         android:layout_width="0dp"
@@ -92,6 +70,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/et_layout_message"
         app:srcCompat="@drawable/alarm_clock_color" />
+
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/btn_send"
+        app:layout_constraintEnd_toStartOf="@+id/btn_send_close"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_layout_message" />
+
+    <Button
+        android:id="@+id/btn_send_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_send_close"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btn_send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_send" />
+
+    <CheckBox
+        android:id="@+id/cb_delay_notification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:checked="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_send"
+        tools:text="Delay a reminder before 11:30 08.12.2018" />
 
 
 </android.support.constraint.ConstraintLayout>
