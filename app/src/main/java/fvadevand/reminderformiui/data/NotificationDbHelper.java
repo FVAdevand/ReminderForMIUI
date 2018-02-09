@@ -12,7 +12,7 @@ import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 
 public class NotificationDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "notificationDb.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public NotificationDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,7 +24,8 @@ public class NotificationDbHelper extends SQLiteOpenHelper {
                 NotificationEntry._ID + " INTEGER PRIMARY KEY, " +
                 NotificationEntry.COLUMN_IMAGE_ID + " INTEGER NOT NULL, " +
                 NotificationEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-                NotificationEntry.COLUMN_MESSAGE + " TEXT);";
+                NotificationEntry.COLUMN_MESSAGE + " TEXT, " +
+                NotificationEntry.COLUMN_DATE + " INTEGER NOT NULL);";
 
         db.execSQL(CREATE_TABLE);
     }

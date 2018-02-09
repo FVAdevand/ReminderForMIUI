@@ -14,6 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="4dp"
+        android:contentDescription="@string/icon_notification"
         android:padding="@dimen/push_image_padding"
         tools:src="@drawable/add_color" />
 
@@ -25,26 +26,33 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/title_TV"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/title_TV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="center_vertical"
             android:maxLines="1"
             android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
             tools:text="Title" />
 
         <TextView
             android:id="@+id/message_TV"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="center_vertical"
             android:maxLines="1"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             tools:text="message" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <ImageButton
@@ -54,6 +62,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/ibtn_cancel_notification"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
         android:src="@drawable/ic_clear_black" />

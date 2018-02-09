@@ -83,13 +83,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             case R.id.action_resend:
                 Intent serviceResendIntent = new Intent(this, NotificationIntentService.class);
-                serviceResendIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATION);
+                serviceResendIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATIONS);
                 startService(serviceResendIntent);
                 return true;
 
             case R.id.action_delete_all:
                 Intent serviceDeleteIntent = new Intent(this, NotificationIntentService.class);
-                serviceDeleteIntent.setAction(NotificationTask.ACTION_DELETE_ALL_NOTIFICATION);
+                serviceDeleteIntent.setAction(NotificationTask.ACTION_DELETE_ALL_NOTIFICATIONS);
                 startService(serviceDeleteIntent);
                 return true;
         }

@@ -28,4 +28,6 @@
     <string name="format_short_date">dd.MM.yy</string>
     <string name="delay_notification">Delay a reminder before %1$s %2$s</string>
     <string name="format_time">HH:mm</string>
+    <string name="ibtn_cancel_notification">cancel notification</string>
+    <string name="icon_notification">icon of notification</string>
 </resources>

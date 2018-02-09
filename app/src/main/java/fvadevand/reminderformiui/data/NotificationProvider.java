@@ -16,6 +16,7 @@ import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 
 /**
  * Created by Vladimir on 30.01.2018.
+ *
  */
 
 public class NotificationProvider extends ContentProvider {
@@ -84,15 +85,12 @@ public class NotificationProvider extends ContentProvider {
     }
 
     private Uri insertNotifications(Uri uri, ContentValues values) {
-        String title = values.getAsString(NotificationEntry.COLUMN_TITLE);
-        if (TextUtils.isEmpty(title)) {
-            throw new IllegalArgumentException("notification requires a title");
+        if (values.size() == 0) {
+            return null;
         }
 
-        Integer imageId = values.getAsInteger(NotificationEntry.COLUMN_IMAGE_ID);
-        if (imageId == null) {
-            throw new IllegalArgumentException("notification requires a image_id");
-        }
+        checkData(values);
+
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         long newRowId = db.insert(NotificationEntry.TABLE_NAME,
                 null,
@@ -150,19 +148,7 @@ public class NotificationProvider extends ContentProvider {
             return 0;
         }
 
-        if (values.containsKey(NotificationEntry.COLUMN_TITLE)) {
-            String title = values.getAsString(NotificationEntry.COLUMN_TITLE);
-            if (TextUtils.isEmpty(title)) {
-                throw new IllegalArgumentException("notification requires a title");
-            }
-        }
-
-        if (values.containsKey(NotificationEntry.COLUMN_IMAGE_ID)) {
-            Integer imageId = values.getAsInteger(NotificationEntry.COLUMN_IMAGE_ID);
-            if (imageId == null) {
-                throw new IllegalArgumentException("notification requires a image_id");
-            }
-        }
+        checkData(values);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         int rowsUpdated = db.update(NotificationEntry.TABLE_NAME,
@@ -190,5 +176,28 @@ public class NotificationProvider extends ContentProvider {
         }
     }
 
+    private void checkData(ContentValues values) {
+
+        if (values.containsKey(NotificationEntry.COLUMN_TITLE)) {
+            String title = values.getAsString(NotificationEntry.COLUMN_TITLE);
+            if (TextUtils.isEmpty(title)) {
+                throw new IllegalArgumentException("notification requires a title");
+            }
+        }
+
+        if (values.containsKey(NotificationEntry.COLUMN_IMAGE_ID)) {
+            Integer imageId = values.getAsInteger(NotificationEntry.COLUMN_IMAGE_ID);
+            if (imageId == null) {
+                throw new IllegalArgumentException("notification requires a image_id");
+            }
+        }
+
+        if (values.containsKey(NotificationEntry.COLUMN_DATE)) {
+            Long utcTimeInMillis = values.getAsLong(NotificationEntry.COLUMN_DATE);
+            if (utcTimeInMillis == null) {
+                throw new IllegalArgumentException("notification requires a time");
+            }
+        }
+    }
 
 }

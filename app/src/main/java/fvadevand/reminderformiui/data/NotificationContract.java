@@ -29,5 +29,6 @@ public class NotificationContract {
         public static final String COLUMN_IMAGE_ID = "image_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MESSAGE = "message";
+        public static final String COLUMN_DATE = "date";
     }
 }

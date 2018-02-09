@@ -16,6 +16,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import fvadevand.reminderformiui.MainActivity;
 import fvadevand.reminderformiui.R;
@@ -25,11 +26,11 @@ import fvadevand.reminderformiui.service.NotificationTask;
 
 /**
  * Created by Vladimir on 24.01.2018.
+ *
  */
 
 public class ReminderUtils {
 
-    public static final String KEY_NOTIFICATION_ID = "key_notification_id";
     private static final String LOG_TAG = ReminderUtils.class.getSimpleName();
     private ReminderUtils() {
     }
@@ -117,7 +118,12 @@ public class ReminderUtils {
     }
 
     // TODO: fix notification for android OREO.
-    public static void sendNotification(Context context, int notificationId, int imageId, String title, String message) {
+    public static void notifyNotification(Context context, Bundle notificationBundle) {
+
+        int notificationId = notificationBundle.getInt(NotificationEntry._ID);
+        int imageId = notificationBundle.getInt(NotificationEntry.COLUMN_IMAGE_ID);
+        String title = notificationBundle.getString(NotificationEntry.COLUMN_TITLE);
+        String message = notificationBundle.getString(NotificationEntry.COLUMN_MESSAGE);
 
         RemoteViews notificationView = new RemoteViews(context.getPackageName(), R.layout.custom_push);
         notificationView.setImageViewResource(R.id.large_image_IV, imageId);
@@ -134,10 +140,10 @@ public class ReminderUtils {
         Intent startServiceIntent = new Intent(context, NotificationIntentService.class);
         startServiceIntent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
 
-        Bundle notificationBundle = new Bundle();
-        notificationBundle.putInt(NotificationEntry._ID, notificationId);
+        Bundle notificationIdBundle = new Bundle();
+        notificationIdBundle.putInt(NotificationEntry._ID, notificationId);
 
-        startServiceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationBundle);
+        startServiceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationIdBundle);
         PendingIntent startServicePendingIntent = PendingIntent.getService(context, notificationId, startServiceIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.delete_button, startServicePendingIntent);
 
@@ -189,5 +195,15 @@ public class ReminderUtils {
     public static String formatShortDate(Context context, Calendar calendar) {
         Format dateFormat = new SimpleDateFormat(context.getString(R.string.format_short_date), Locale.getDefault());
         return dateFormat.format(calendar.getTime());
+    }
+
+    public static long getUtcTimeInMillis(Calendar calendar) {
+        long offset = calendar.getTimeZone().getOffset(calendar.getTimeInMillis());
+        return calendar.getTimeInMillis() - offset;
+    }
+
+    public static long getLocalTimeInMillis(long utcTimeInMillis) {
+        long offset = TimeZone.getDefault().getOffset(utcTimeInMillis);
+        return utcTimeInMillis + offset;
     }
 }

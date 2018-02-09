@@ -115,7 +115,7 @@ public class EditorActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btn_send:
-                if (notifyNotification()) {
+                if (saveNotification()) {
                     mTitleInputLayout.setError(null);
                     clearFields();
                 }
@@ -124,7 +124,7 @@ public class EditorActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btn_send_close:
-                if (notifyNotification()) {
+                if (saveNotification()) {
                     mTitleInputLayout.setError(null);
                     finishAffinity();
                     break;
@@ -135,7 +135,7 @@ public class EditorActivity extends AppCompatActivity implements
         }
     }
 
-    private boolean notifyNotification() {
+    private boolean saveNotification() {
 
         String title = mTitleET.getText().toString().trim();
 
@@ -153,6 +153,7 @@ public class EditorActivity extends AppCompatActivity implements
         notificationBundle.putString(NotificationEntry.COLUMN_TITLE, title);
         notificationBundle.putString(NotificationEntry.COLUMN_MESSAGE, message);
         notificationBundle.putInt(NotificationEntry.COLUMN_IMAGE_ID, mImageId);
+        notificationBundle.putLong(NotificationEntry.COLUMN_DATE, ReminderUtils.getUtcTimeInMillis(mCalendar));
 
         Intent serviceIntent = new Intent(this, NotificationIntentService.class);
 
@@ -163,7 +164,7 @@ public class EditorActivity extends AppCompatActivity implements
             setTitle(R.string.editor_activity_title_new_mode);
             getLoaderManager().getLoader(EXISTING_NOTIFICATION_LOADER_ID).reset();
         } else {
-            serviceIntent.setAction(NotificationTask.ACTION_SEND_NOTIFICATION);
+            serviceIntent.setAction(NotificationTask.ACTION_INSERT_NOTIFICATION);
         }
 
         serviceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationBundle);
