@@ -4,8 +4,7 @@
     <string name="editor_activity_title_new_mode">Новое напоминание</string>
     <string name="action_settings">Настройки</string>
     <string name="action_delete_all">Удалить все напоминания</string>
-    <string name="btn_send">отправить</string>
-    <string name="btn_send_close">отправить и закрыть</string>
+    <string name="btn_send">уведомить</string>
     <string name="btn_set">Установить</string>
     <string name="btn_cancel">Отмена</string>
     <string name="notification_title_hint">Введите заголовок</string>

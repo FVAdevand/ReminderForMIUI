@@ -50,6 +50,7 @@ public class EditorActivity extends AppCompatActivity implements
     private CheckBox mDelayNotificationCheckBox;
     private Calendar mCalendar;
 
+    // TODO: fix layout after rotated device. CheckBox and dialogs. (Temporary lock in manifest)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +72,9 @@ public class EditorActivity extends AppCompatActivity implements
 
         Button sendCloseButton = findViewById(R.id.btn_send_close);
         sendCloseButton.setOnClickListener(this);
+
+        Button sendBackButton = findViewById(R.id.btn_send_back);
+        sendBackButton.setOnClickListener(this);
 
         mTitleInputLayout = findViewById(R.id.et_layout_title);
 
@@ -124,6 +128,16 @@ public class EditorActivity extends AppCompatActivity implements
                 if (saveNotification()) {
                     mTitleInputLayout.setError(null);
                     finishAffinity();
+                    break;
+                }
+                mTitleET.requestFocus();
+                mInputMethodManager.showSoftInput(mTitleET, InputMethodManager.SHOW_IMPLICIT);
+                break;
+
+            case R.id.btn_send_back:
+                if (saveNotification()) {
+                    mTitleInputLayout.setError(null);
+                    finish();
                     break;
                 }
                 mTitleET.requestFocus();

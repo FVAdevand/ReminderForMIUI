@@ -125,6 +125,7 @@ public class ReminderUtils {
         return imageIdArray.get(multicolorImageId);
     }
 
+    // TODO: add sound and vibration to notification
     public static void notifyNotification(Context context, Bundle notificationBundle) {
 
         int notificationId = notificationBundle.getInt(NotificationEntry._ID);

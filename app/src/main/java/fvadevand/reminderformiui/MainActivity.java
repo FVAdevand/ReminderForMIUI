@@ -27,8 +27,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     NotificationAdapter mCursorAdapter;
 
-
-    // TODO: add list notification (saved and planned notification)
+    //TODO: change layout notification item
+    //TODO: add time notification - black color
+    //TODO: add time delay notification - red color
+    //TODO: add button notify_now to delay notification
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
