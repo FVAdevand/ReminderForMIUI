@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
@@ -25,8 +26,9 @@ public class NotificationTask {
     public static final String ACTION_DELETE_ALL_NOTIFICATIONS = "fvadevand.reminderformiui.delete_all_notifications";
     public static final String ACTION_UPDATE_NOTIFICATION = "fvadevand.reminderformiui.update_notification";
     public static final String ACTION_INSERT_NOTIFICATION = "fvadevand.reminderformiui.insert_notification";
+    public static final String ACTION_NOTIFY_DELAYED_NOTIFICATION = "fvadevand.reminderformiui.notify_delayed_notification";
     public static final String NOTIFICATION_BUNDLE = "fvadevand.reminderformiui.notification_bundle";
-    private static final String ACTION_NOTIFY_DELAYED_NOTIFICATION = "fvadevand.reminderformiui.notify_delayed_notification";
+
     private static final String LOG_TAG = NotificationTask.class.getSimpleName();
 
     private NotificationTask() {
@@ -57,6 +59,7 @@ public class NotificationTask {
     }
 
     private static void resendNotifications(Context context) {
+
         Cursor cursor = context.getContentResolver().query(
                 NotificationEntry.CONTENT_URI,
                 null,
@@ -101,6 +104,7 @@ public class NotificationTask {
         int rowsUpdated = context.getContentResolver().update(contentUri, contentValues, null, null);
         if (rowsUpdated > 0) {
             if (isDelay(notificationBundle)) {
+                ReminderUtils.deleteNotification(context, id);
                 startDelayNotification(context, notificationBundle);
             } else {
                 ReminderUtils.notifyNotification(context, notificationBundle);
@@ -165,7 +169,12 @@ public class NotificationTask {
         serviceIntent.setAction(ACTION_NOTIFY_DELAYED_NOTIFICATION);
         serviceIntent.putExtra(NOTIFICATION_BUNDLE, notificationBundle);
 
-        PendingIntent alarmIntent = PendingIntent.getService(context, id, serviceIntent, 0);
+        PendingIntent alarmIntent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            alarmIntent = PendingIntent.getService(context, id, serviceIntent, 0);
+        } else {
+            alarmIntent = PendingIntent.getForegroundService(context, id, serviceIntent, 0);
+        }
 
         long utcTimeInMillis = notificationBundle.getLong(NotificationEntry.COLUMN_DATE);
         long localTimeInMillis = ReminderUtils.getLocalTimeInMillis(utcTimeInMillis);

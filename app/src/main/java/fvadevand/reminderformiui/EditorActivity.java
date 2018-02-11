@@ -15,7 +15,6 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -50,8 +49,6 @@ public class EditorActivity extends AppCompatActivity implements
     private TextInputLayout mTitleInputLayout;
     private CheckBox mDelayNotificationCheckBox;
     private Calendar mCalendar;
-
-    // TODO: add AlarmManager to send notification. Send notification after some time.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +142,6 @@ public class EditorActivity extends AppCompatActivity implements
         }
 
         if (!mDelayNotificationCheckBox.isChecked()) mCalendar = Calendar.getInstance();
-        Log.i(LOG_TAG, ReminderUtils.formatTime(this, mCalendar));
 
         String message = mMessageET.getText().toString().trim();
 
@@ -209,6 +205,13 @@ public class EditorActivity extends AppCompatActivity implements
             mMessageET.setText(cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_MESSAGE)));
             mImageId = cursor.getInt(cursor.getColumnIndex(NotificationEntry.COLUMN_IMAGE_ID));
             mChooseImageButton.setImageResource(mImageId);
+            long utcDelayTimeInMillis = cursor.getLong(cursor.getColumnIndex(NotificationEntry.COLUMN_DATE));
+            long localDelayTimeInMillis = ReminderUtils.getLocalTimeInMillis(utcDelayTimeInMillis);
+            if (localDelayTimeInMillis > System.currentTimeMillis()) {
+                Calendar delayCalendar = Calendar.getInstance();
+                delayCalendar.setTimeInMillis(localDelayTimeInMillis);
+                onAlarmSet(delayCalendar);
+            }
         }
     }
 

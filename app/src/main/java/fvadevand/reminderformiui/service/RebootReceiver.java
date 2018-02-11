@@ -3,9 +3,11 @@ package fvadevand.reminderformiui.service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 /**
  * Created by Vladimir on 27.01.2018.
+ *
  */
 
 public class RebootReceiver extends BroadcastReceiver {
@@ -16,6 +18,10 @@ public class RebootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent startServiceIntent = new Intent(context, NotificationIntentService.class);
         startServiceIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATIONS);
-        context.startService(startServiceIntent);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            context.startService(startServiceIntent);
+        } else {
+            context.startForegroundService(startServiceIntent);
+        }
     }
 }

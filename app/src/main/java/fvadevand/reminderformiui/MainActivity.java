@@ -24,6 +24,7 @@ import fvadevand.reminderformiui.service.NotificationTask;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int NOTIFICATIONS_LOADER_ID = 145;
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     NotificationAdapter mCursorAdapter;
 
 
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startService(serviceDeleteIntent);
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

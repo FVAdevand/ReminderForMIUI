@@ -1,12 +1,16 @@
 package fvadevand.reminderformiui.utilities;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -31,7 +35,11 @@ import fvadevand.reminderformiui.service.NotificationTask;
 
 public class ReminderUtils {
 
+    public static final String MAIN_REMINDER_NOTIFICATION_CHANNEL_ID = "fvadevand.reminderformiui.main_reminder_notification_channel";
+    public static final String SERVICE_REMINDER_NOTIFICATION_CHANNEL_ID = "fvadevand.reminderformiui.service_reminder_notification_channel";
     private static final String LOG_TAG = ReminderUtils.class.getSimpleName();
+
+
     private ReminderUtils() {
     }
 
@@ -112,12 +120,11 @@ public class ReminderUtils {
         return getImageIdArray().keyAt(0);
     }
 
-    private static int getMonocolorImageId(int multicolorImageId) {
+    public static int getMonocolorImageId(int multicolorImageId) {
         SparseIntArray imageIdArray = getImageIdArray();
         return imageIdArray.get(multicolorImageId);
     }
 
-    // TODO: fix notification for android OREO.
     public static void notifyNotification(Context context, Bundle notificationBundle) {
 
         int notificationId = notificationBundle.getInt(NotificationEntry._ID);
@@ -147,7 +154,17 @@ public class ReminderUtils {
         PendingIntent startServicePendingIntent = PendingIntent.getService(context, notificationId, startServiceIntent, 0);
         notificationView.setOnClickPendingIntent(R.id.delete_button, startServicePendingIntent);
 
-        Notification notification = new Notification.Builder(context)
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    MAIN_REMINDER_NOTIFICATION_CHANNEL_ID,
+                    context.getString(R.string.main_notification_channel_name),
+                    NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+
+        Notification notification = new NotificationCompat.Builder(context, MAIN_REMINDER_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(getMonocolorImageId(imageId))
                 .setContent(notificationView)
                 .setContentIntent(startActivityPendingIntent)
@@ -168,8 +185,8 @@ public class ReminderUtils {
 
         }
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(notificationId, notification);
+        Log.i(LOG_TAG, formatTime(context, Calendar.getInstance()));
     }
 
     public static void deleteNotification(Context context, int notificationId) {
