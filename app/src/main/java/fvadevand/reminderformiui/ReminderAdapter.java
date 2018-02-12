@@ -44,8 +44,8 @@ public class ReminderAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ImageView iconImageView = view.findViewById(R.id.iv_icon_reminder);
-        int imageId = cursor.getInt(cursor.getColumnIndex(NotificationEntry.COLUMN_IMAGE_ID));
-        iconImageView.setImageResource(imageId);
+        int iconId = cursor.getInt(cursor.getColumnIndex(NotificationEntry.COLUMN_IMAGE_ID));
+        iconImageView.setImageResource(iconId);
 
         TextView titleTextView = view.findViewById(R.id.tv_title_reminder);
         String title = cursor.getString(cursor.getColumnIndex(NotificationEntry.COLUMN_TITLE));
@@ -60,9 +60,10 @@ public class ReminderAdapter extends CursorAdapter {
         }
 
         TextView timeTextView = view.findViewById(R.id.tv_time_reminder);
-        long localTimeInMillis = ReminderUtils.getLocalTimeInMillis(cursor.getLong(cursor.getColumnIndex(NotificationEntry.COLUMN_DATE)));
+        long utcDelayTimeInMillis = cursor.getLong(cursor.getColumnIndex(NotificationEntry.COLUMN_DATE));
+        long localDelayTimeInMillis = ReminderUtils.getLocalTimeInMillis(utcDelayTimeInMillis);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(localTimeInMillis);
+        calendar.setTimeInMillis(localDelayTimeInMillis);
         String timeReminderString = ReminderUtils.formatTime(context, calendar) + " " + ReminderUtils.formatFullDate(context, calendar);
         timeTextView.setText(timeReminderString);
 
@@ -70,10 +71,8 @@ public class ReminderAdapter extends CursorAdapter {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View parentView = (View) v.getParent();
-                ListView lv = (ListView) parentView.getParent();
-                int position = lv.getPositionForView(parentView);
-                int notificationId = (int) getItemId(position);
+                int notificationId = getNotificationId(v);
+
                 Intent serviceIntent = new Intent(v.getContext(), NotificationIntentService.class);
                 serviceIntent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
 
@@ -82,23 +81,20 @@ public class ReminderAdapter extends CursorAdapter {
 
                 serviceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationBundle);
                 v.getContext().startService(serviceIntent);
-                Snackbar snackbar = Snackbar.make(lv, R.string.message_reminder_deleted, Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(v, R.string.message_reminder_deleted, Snackbar.LENGTH_SHORT);
                 snackbar.show();
             }
         });
         deleteButton.setFocusable(false);
 
         ImageButton notifyButton = view.findViewById(R.id.btn_notify_reminder);
-        if (localTimeInMillis > System.currentTimeMillis()) {
+        if (localDelayTimeInMillis > System.currentTimeMillis()) {
             notifyButton.setVisibility(View.VISIBLE);
             timeTextView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
             notifyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    View parentView = (View) v.getParent();
-                    ListView lv = (ListView) parentView.getParent();
-                    int position = lv.getPositionForView(parentView);
-                    int notificationId = (int) getItemId(position);
+                    int notificationId = getNotificationId(v);
 
                     Intent serviceIntent = new Intent(v.getContext(), NotificationIntentService.class);
                     serviceIntent.setAction(NotificationTask.ACTION_UPDATE_NOTIFICATION);
@@ -109,7 +105,7 @@ public class ReminderAdapter extends CursorAdapter {
 
                     serviceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationBundle);
                     v.getContext().startService(serviceIntent);
-                    Snackbar snackbar = Snackbar.make(lv, R.string.message_notification_shown, Snackbar.LENGTH_SHORT);
+                    Snackbar snackbar = Snackbar.make(v, R.string.message_notification_shown, Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 }
             });
@@ -118,5 +114,12 @@ public class ReminderAdapter extends CursorAdapter {
             notifyButton.setVisibility(View.GONE);
             timeTextView.setTextColor(ContextCompat.getColor(context, R.color.message_notification_text));
         }
+    }
+
+    private int getNotificationId(View view) {
+        View parentView = (View) view.getParent();
+        ListView lv = (ListView) parentView.getParent();
+        int position = lv.getPositionForView(parentView);
+        return (int) getItemId(position);
     }
 }

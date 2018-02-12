@@ -31,6 +31,7 @@ public class NotificationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        if (intent == null) return;
         boolean isStartForeground = false;
         String action = intent.getAction();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -45,7 +46,7 @@ public class NotificationIntentService extends IntentService {
 
                 Notification notification = new NotificationCompat.Builder(this, ReminderUtils.SERVICE_REMINDER_NOTIFICATION_CHANNEL_ID)
                         .setSmallIcon(ReminderUtils.getMonocolorImageId(imageId))
-                        .setContentTitle("update notifications")
+                        .setContentTitle(getString(R.string.message_update_notifications))
                         .setOngoing(true)
                         .build();
 

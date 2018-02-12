@@ -18,4 +18,22 @@
     <string name="empty_view_subtitle_text">добавьте напоминание</string>
     <string name="editor_activity_title_edit_mode">Редактирование напоминания</string>
     <string name="action_resend">Показать все напоминания</string>
+    <string name="pref_image_title">Иконка напоминания</string>
+    <string name="pref_image_summary">выберите стандартную иконку</string>
+    <string name="pref_change_icon_summary_on">изменять на иконкку по умолчанию</string>
+    <string name="pref_change_icon_summary_off">оставить последнюю выбранную</string>
+    <string name="pref_change_icon_title">Иконка для следующих напоминаний</string>
+    <string name="format_full_date">EEEE, dd MMM yyyy</string>
+    <string name="format_short_date">dd.MM.yy</string>
+    <string name="format_time">HH:mm</string>
+    <string name="description_ibtn_cancel_notification">отменить уведомление</string>
+    <string name="description_icon_notification">иконка уведомления</string>
+    <string name="description_ibtn_icon_notification">установить иконку уведомления</string>
+    <string name="description_ibtn_alarm">установить время напоминания</string>
+    <string name="description_notify_reminder">показать уведомление</string>
+    <string name="main_notification_channel_name">Основной</string>
+    <string name="service_notification_channel_name">Сервисный</string>
+    <string name="message_reminder_deleted">напоминание удалено</string>
+    <string name="message_notification_shown">уведомление показано</string>
+    <string name="message_update_notifications">обновление уведомлений</string>
 </resources>

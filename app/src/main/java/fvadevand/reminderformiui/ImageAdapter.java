@@ -11,6 +11,7 @@ import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 /**
  * Created by Vladimir on 25.12.2017.
+ *
  */
 
 public class ImageAdapter extends BaseAdapter {
@@ -18,7 +19,7 @@ public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private Integer[] mThumbIds = ReminderUtils.getThumbIds();
 
-    public ImageAdapter(Context c) {
+    ImageAdapter(Context c) {
         mContext = c;
     }
 

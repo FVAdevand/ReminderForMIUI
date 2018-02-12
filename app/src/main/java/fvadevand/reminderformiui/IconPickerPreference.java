@@ -11,6 +11,7 @@ import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 /**
  * Created by Vladimir on 31.01.2018.
+ *
  */
 
 public class IconPickerPreference extends Preference implements IconPickerDialog.onIconSetListener {

@@ -16,12 +16,12 @@ public class RebootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent startServiceIntent = new Intent(context, NotificationIntentService.class);
-        startServiceIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATIONS);
+        Intent serviceIntent = new Intent(context, NotificationIntentService.class);
+        serviceIntent.setAction(NotificationTask.ACTION_RESEND_NOTIFICATIONS);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            context.startService(startServiceIntent);
+            context.startService(serviceIntent);
         } else {
-            context.startForegroundService(startServiceIntent);
+            context.startForegroundService(serviceIntent);
         }
     }
 }

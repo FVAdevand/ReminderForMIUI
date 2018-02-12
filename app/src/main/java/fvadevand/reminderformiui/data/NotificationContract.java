@@ -6,6 +6,7 @@ import android.provider.BaseColumns;
 
 /**
  * Created by Vladimir on 26.01.2018.
+ *
  */
 
 public class NotificationContract {

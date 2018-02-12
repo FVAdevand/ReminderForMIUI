@@ -67,6 +67,8 @@ public class NotificationTask {
                 null,
                 null);
 
+        if (cursor == null) return;
+
         while (cursor.moveToNext()) {
             Bundle notificationBundle = getBundleFromCursor(cursor);
             if (isDelay(notificationBundle)) {
@@ -78,25 +80,29 @@ public class NotificationTask {
         cursor.close();
     }
 
-    private static void deleteNotification(Context context, Bundle bundle) {
-        int rowId = bundle.getInt(NotificationEntry._ID);
+    private static void deleteNotification(Context context, Bundle notificationBundle) {
+
+        int rowId = notificationBundle.getInt(NotificationEntry._ID);
         Uri uri = ContentUris.withAppendedId(NotificationEntry.CONTENT_URI, rowId);
 
         int rowsDeleted = context.getContentResolver().delete(uri, null, null);
         if (rowsDeleted > 0) {
             ReminderUtils.deleteNotification(context, rowId);
-            stopDelayNotification(context, bundle);
+            stopDelayNotification(context, notificationBundle);
         }
     }
 
     private static void deleteAllNotifications(Context context) {
+
         int rowsDeleted = context.getContentResolver().delete(NotificationEntry.CONTENT_URI, null, null);
         if (rowsDeleted > 0) {
             ReminderUtils.deleteAllNotifications(context);
+            //TODO: add delete all alarms
         }
     }
 
     private static void updateNotification(Context context, Bundle notificationBundle) {
+
         int rowId = notificationBundle.getInt(NotificationEntry._ID);
         Uri contentUri = ContentUris.withAppendedId(NotificationEntry.CONTENT_URI, rowId);
 
@@ -111,6 +117,8 @@ public class NotificationTask {
                     null,
                     null,
                     null);
+
+            if (cursor == null) return;
 
             if (cursor.moveToFirst()) {
                 notificationBundle = getBundleFromCursor(cursor);
