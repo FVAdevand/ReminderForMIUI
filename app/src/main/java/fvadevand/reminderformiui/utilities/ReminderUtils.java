@@ -153,7 +153,7 @@ public class ReminderUtils {
 
         startServiceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationIdBundle);
         PendingIntent startServicePendingIntent = PendingIntent.getService(context, notificationId, startServiceIntent, 0);
-        notificationView.setOnClickPendingIntent(R.id.delete_button, startServicePendingIntent);
+        notificationView.setOnClickPendingIntent(R.id.btn_clear, startServicePendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

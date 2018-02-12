@@ -85,6 +85,7 @@ public class NotificationTask {
         int rowsDeleted = context.getContentResolver().delete(uri, null, null);
         if (rowsDeleted > 0) {
             ReminderUtils.deleteNotification(context, rowId);
+            stopDelayNotification(context, bundle);
         }
     }
 
@@ -96,15 +97,30 @@ public class NotificationTask {
     }
 
     private static void updateNotification(Context context, Bundle notificationBundle) {
-        int id = notificationBundle.getInt(NotificationEntry._ID);
-        Uri contentUri = ContentUris.withAppendedId(NotificationEntry.CONTENT_URI, id);
+        int rowId = notificationBundle.getInt(NotificationEntry._ID);
+        Uri contentUri = ContentUris.withAppendedId(NotificationEntry.CONTENT_URI, rowId);
 
         ContentValues contentValues = getContentValues(notificationBundle);
 
         int rowsUpdated = context.getContentResolver().update(contentUri, contentValues, null, null);
         if (rowsUpdated > 0) {
+
+            Cursor cursor = context.getContentResolver().query(
+                    contentUri,
+                    null,
+                    null,
+                    null,
+                    null);
+
+            if (cursor.moveToFirst()) {
+                notificationBundle = getBundleFromCursor(cursor);
+            }
+            cursor.close();
+
+            stopDelayNotification(context, notificationBundle);
+
             if (isDelay(notificationBundle)) {
-                ReminderUtils.deleteNotification(context, id);
+                ReminderUtils.deleteNotification(context, rowId);
                 startDelayNotification(context, notificationBundle);
             } else {
                 ReminderUtils.notifyNotification(context, notificationBundle);
@@ -134,10 +150,10 @@ public class NotificationTask {
         long utcTimeInMillis = bundle.getLong(NotificationEntry.COLUMN_DATE);
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(NotificationEntry.COLUMN_IMAGE_ID, imageId);
-        contentValues.put(NotificationEntry.COLUMN_TITLE, title);
-        contentValues.put(NotificationEntry.COLUMN_MESSAGE, message);
-        contentValues.put(NotificationEntry.COLUMN_DATE, utcTimeInMillis);
+        if (imageId != 0) contentValues.put(NotificationEntry.COLUMN_IMAGE_ID, imageId);
+        if (title != null) contentValues.put(NotificationEntry.COLUMN_TITLE, title);
+        if (message != null) contentValues.put(NotificationEntry.COLUMN_MESSAGE, message);
+        if (utcTimeInMillis != 0) contentValues.put(NotificationEntry.COLUMN_DATE, utcTimeInMillis);
 
         return contentValues;
     }
@@ -179,23 +195,35 @@ public class NotificationTask {
         long utcTimeInMillis = notificationBundle.getLong(NotificationEntry.COLUMN_DATE);
         long localTimeInMillis = ReminderUtils.getLocalTimeInMillis(utcTimeInMillis);
 
-        alarmMgr.set(AlarmManager.RTC_WAKEUP, localTimeInMillis, alarmIntent);
+        if (alarmMgr != null) {
+            alarmMgr.set(AlarmManager.RTC_WAKEUP, localTimeInMillis, alarmIntent);
+        }
+    }
+
+    private static void stopDelayNotification(Context context, Bundle notificationBundle) {
+
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        int id = notificationBundle.getInt(NotificationEntry._ID);
+
+        Intent serviceIntent = new Intent(context, NotificationIntentService.class);
+        serviceIntent.setAction(ACTION_NOTIFY_DELAYED_NOTIFICATION);
+        serviceIntent.putExtra(NOTIFICATION_BUNDLE, notificationBundle);
+
+        PendingIntent alarmIntent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            alarmIntent = PendingIntent.getService(context, id, serviceIntent, 0);
+        } else {
+            alarmIntent = PendingIntent.getForegroundService(context, id, serviceIntent, 0);
+        }
+        if (alarmMgr != null) {
+            alarmMgr.cancel(alarmIntent);
+        }
     }
 
     private static boolean isDelay(Bundle notificationBundle) {
         long utcTimeNotificationInMillis = notificationBundle.getLong(NotificationEntry.COLUMN_DATE);
         long localTimeNotificationInMillis = ReminderUtils.getLocalTimeInMillis(utcTimeNotificationInMillis);
-
-//        Calendar currentCal = Calendar.getInstance();
-//        currentCal.setTimeInMillis(System.currentTimeMillis());
-//        Calendar utcCal = Calendar.getInstance();
-//        utcCal.setTimeInMillis(utcTimeNotificationInMillis);
-//        Calendar localCal = Calendar.getInstance();
-//        localCal.setTimeInMillis(localTimeNotificationInMillis);
-//        Log.i(LOG_TAG, "notif " + ReminderUtils.formatTime(context, localCal) + " " + ReminderUtils.formatShortDate(context, localCal));
-//        Log.i(LOG_TAG, "UTC " + ReminderUtils.formatTime(context, utcCal) + " " + ReminderUtils.formatShortDate(context, utcCal));
-//        Log.i(LOG_TAG, "current " + ReminderUtils.formatTime(context, currentCal) + " " + ReminderUtils.formatShortDate(context, currentCal));
-
         return localTimeNotificationInMillis > System.currentTimeMillis();
     }
 }

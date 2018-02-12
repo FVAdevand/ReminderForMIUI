@@ -25,12 +25,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final int NOTIFICATIONS_LOADER_ID = 145;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    NotificationAdapter mCursorAdapter;
-
-    //TODO: change layout notification item
-    //TODO: add time notification - black color
-    //TODO: add time delay notification - red color
-    //TODO: add button notify_now to delay notification
+    ReminderAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ListView notificationListView = findViewById(R.id.lv_notifications);
         View emptyView = findViewById(R.id.empty_view);
         notificationListView.setEmptyView(emptyView);
-        mCursorAdapter = new NotificationAdapter(this, null);
+        mCursorAdapter = new ReminderAdapter(this, null);
         notificationListView.setAdapter(mCursorAdapter);
 
         getLoaderManager().initLoader(NOTIFICATIONS_LOADER_ID, null, this);
@@ -106,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 null,
                 null,
                 null,
-                null);
+                NotificationEntry.COLUMN_DATE + " ASC");
     }
 
     @Override

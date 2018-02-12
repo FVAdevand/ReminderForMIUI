@@ -16,7 +16,6 @@ import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 
 /**
  * Created by Vladimir on 30.01.2018.
- *
  */
 
 public class NotificationProvider extends ContentProvider {
@@ -89,7 +88,7 @@ public class NotificationProvider extends ContentProvider {
             return null;
         }
 
-        checkData(values);
+        checkInsertData(values);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         long newRowId = db.insert(NotificationEntry.TABLE_NAME,
@@ -148,7 +147,7 @@ public class NotificationProvider extends ContentProvider {
             return 0;
         }
 
-        checkData(values);
+        checkUpdateData(values);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         int rowsUpdated = db.update(NotificationEntry.TABLE_NAME,
@@ -176,7 +175,7 @@ public class NotificationProvider extends ContentProvider {
         }
     }
 
-    private void checkData(ContentValues values) {
+    private void checkUpdateData(ContentValues values) {
 
         if (values.containsKey(NotificationEntry.COLUMN_TITLE)) {
             String title = values.getAsString(NotificationEntry.COLUMN_TITLE);
@@ -197,6 +196,24 @@ public class NotificationProvider extends ContentProvider {
             if (utcTimeInMillis == null) {
                 throw new IllegalArgumentException("notification requires a time");
             }
+        }
+    }
+
+    private void checkInsertData(ContentValues values) {
+
+        String title = values.getAsString(NotificationEntry.COLUMN_TITLE);
+        if (TextUtils.isEmpty(title)) {
+            throw new IllegalArgumentException("notification requires a title");
+        }
+
+        Integer imageId = values.getAsInteger(NotificationEntry.COLUMN_IMAGE_ID);
+        if (imageId == null) {
+            throw new IllegalArgumentException("notification requires a image_id");
+        }
+
+        Long utcTimeInMillis = values.getAsLong(NotificationEntry.COLUMN_DATE);
+        if (utcTimeInMillis == null) {
+            throw new IllegalArgumentException("notification requires a time");
         }
     }
 

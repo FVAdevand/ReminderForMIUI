@@ -31,6 +31,9 @@
     <string name="description_icon_notification">icon of notification</string>
     <string name="description_ibtn_icon_notification">set icon of notification</string>
     <string name="description_ibtn_alarm">set time to delay notification</string>
+    <string name="description_notify_reminder">notify reminder</string>
     <string name="main_notification_channel_name">Primary</string>
     <string name="service_notification_channel_name">Service</string>
+    <string name="message_reminder_deleted">reminder deleted</string>
+    <string name="message_notification_shown">notification shown</string>
 </resources>

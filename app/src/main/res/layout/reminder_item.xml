@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
+    android:id="@+id/layout_reminder"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="80dp"
     android:padding="@dimen/padding_notification">
 
     <ImageView
-        android:id="@+id/large_image_IV"
+        android:id="@+id/iv_icon_reminder"
         android:layout_width="44dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
@@ -21,42 +21,56 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_toEndOf="@id/large_image_IV"
-        android:layout_toStartOf="@id/btn_clear"
+        android:layout_toEndOf="@id/iv_icon_reminder"
+        android:layout_toStartOf="@id/btn_notify_reminder"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_title_reminder"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/title_TV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:maxLines="1"
             android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
             tools:text="Title" />
 
         <TextView
-            android:id="@+id/message_TV"
+            android:id="@+id/tv_message_reminder"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             tools:text="message" />
 
         <TextView
+            android:id="@+id/tv_time_reminder"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification"
+            tools:text="16:00" />
 
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/btn_clear"
+        android:id="@+id/btn_notify_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/btn_delete_reminder"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/description_notify_reminder"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:src="@drawable/ic_arrow_upward_black" />
+
+    <ImageButton
+        android:id="@+id/btn_delete_reminder"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"

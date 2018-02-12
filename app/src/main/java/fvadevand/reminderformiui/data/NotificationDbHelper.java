@@ -8,6 +8,7 @@ import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
 
 /**
  * Created by Vladimir on 26.01.2018.
+ *
  */
 
 public class NotificationDbHelper extends SQLiteOpenHelper {
