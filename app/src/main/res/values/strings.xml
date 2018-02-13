@@ -26,7 +26,8 @@
     <string name="format_full_date">EEEE, dd MMM yyyy</string>
     <string name="format_short_date">dd.MM.yy</string>
     <string name="delay_notification">Delay a reminder before %1$s %2$s</string>
-    <string name="format_time">HH:mm</string>
+    <string name="format_time_24h">HH:mm</string>
+    <string name="format_time_12h">h:mm a</string>
     <string name="description_ibtn_cancel_notification">cancel notification</string>
     <string name="description_icon_notification">icon of notification</string>
     <string name="description_ibtn_icon_notification">set icon of notification</string>

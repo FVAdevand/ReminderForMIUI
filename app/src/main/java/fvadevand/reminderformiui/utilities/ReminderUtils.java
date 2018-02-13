@@ -1,32 +1,16 @@
 package fvadevand.reminderformiui.utilities;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
-import android.util.Log;
+import android.text.format.DateFormat;
 import android.util.SparseIntArray;
-import android.view.View;
-import android.widget.RemoteViews;
 
-import java.lang.reflect.Field;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import fvadevand.reminderformiui.MainActivity;
 import fvadevand.reminderformiui.R;
-import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
-import fvadevand.reminderformiui.service.NotificationIntentService;
-import fvadevand.reminderformiui.service.NotificationTask;
 
 /**
  * Created by Vladimir on 24.01.2018.
@@ -35,8 +19,6 @@ import fvadevand.reminderformiui.service.NotificationTask;
 
 public class ReminderUtils {
 
-    public static final String MAIN_REMINDER_NOTIFICATION_CHANNEL_ID = "fvadevand.reminderformiui.main_reminder_notification_channel";
-    public static final String SERVICE_REMINDER_NOTIFICATION_CHANNEL_ID = "fvadevand.reminderformiui.service_reminder_notification_channel";
     private static final String LOG_TAG = ReminderUtils.class.getSimpleName();
 
 
@@ -125,83 +107,15 @@ public class ReminderUtils {
         return imageIdArray.get(multicolorImageId);
     }
 
-    // TODO: add sound and vibration to notification
-    public static void notifyNotification(Context context, Bundle notificationBundle) {
-
-        int notificationId = notificationBundle.getInt(NotificationEntry._ID);
-        int imageId = notificationBundle.getInt(NotificationEntry.COLUMN_IMAGE_ID);
-        String title = notificationBundle.getString(NotificationEntry.COLUMN_TITLE);
-        String message = notificationBundle.getString(NotificationEntry.COLUMN_MESSAGE);
-
-        RemoteViews notificationView = new RemoteViews(context.getPackageName(), R.layout.custom_push);
-        notificationView.setImageViewResource(R.id.large_image_IV, imageId);
-        notificationView.setTextViewText(R.id.title_TV, title);
-        if (TextUtils.isEmpty(message)) {
-            notificationView.setViewVisibility(R.id.message_TV, View.GONE);
-        } else {
-            notificationView.setTextViewText(R.id.message_TV, message);
-        }
-
-        Intent startActivityIntent = new Intent(context, MainActivity.class);
-        PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, 0);
-
-        Intent startServiceIntent = new Intent(context, NotificationIntentService.class);
-        startServiceIntent.setAction(NotificationTask.ACTION_DELETE_NOTIFICATION);
-
-        Bundle notificationIdBundle = new Bundle();
-        notificationIdBundle.putInt(NotificationEntry._ID, notificationId);
-
-        startServiceIntent.putExtra(NotificationTask.NOTIFICATION_BUNDLE, notificationIdBundle);
-        PendingIntent startServicePendingIntent = PendingIntent.getService(context, notificationId, startServiceIntent, 0);
-        notificationView.setOnClickPendingIntent(R.id.btn_clear, startServicePendingIntent);
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel mChannel = new NotificationChannel(
-                    MAIN_REMINDER_NOTIFICATION_CHANNEL_ID,
-                    context.getString(R.string.main_notification_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(mChannel);
-        }
-
-        Notification notification = new NotificationCompat.Builder(context, MAIN_REMINDER_NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(getMonocolorImageId(imageId))
-                .setContent(notificationView)
-                .setContentIntent(startActivityPendingIntent)
-                .setOngoing(true)
-                .build();
-
-        try {
-            Object miuiNotification = Class.forName("android.app.MiuiNotification").newInstance();
-            Field customizedIconField = miuiNotification.getClass().getDeclaredField("customizedIcon");
-            customizedIconField.setAccessible(true);
-            customizedIconField.set(miuiNotification, true);
-
-            Field extraNotificationField = notification.getClass().getField("extraNotification");
-            extraNotificationField.setAccessible(true);
-            extraNotificationField.set(notification, miuiNotification);
-
-        } catch (Exception e) {
-
-        }
-
-        notificationManager.notify(notificationId, notification);
-        Log.i(LOG_TAG, formatTime(context, Calendar.getInstance()));
-    }
-
-    public static void deleteNotification(Context context, int notificationId) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(notificationId);
-    }
-
-    public static void deleteAllNotifications(Context context) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
-    }
-
     public static String formatTime(Context context, Calendar calendar) {
-        Format timeFormat = new SimpleDateFormat(context.getString(R.string.format_time), Locale.getDefault());
+
+        String formatTimeString;
+        if (DateFormat.is24HourFormat(context)) {
+            formatTimeString = context.getString(R.string.format_time_24h);
+        } else {
+            formatTimeString = context.getString(R.string.format_time_12h);
+        }
+        Format timeFormat = new SimpleDateFormat(formatTimeString, Locale.getDefault());
         return timeFormat.format(calendar.getTime());
     }
 

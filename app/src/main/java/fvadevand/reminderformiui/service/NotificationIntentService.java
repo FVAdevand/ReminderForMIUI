@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import fvadevand.reminderformiui.R;
+import fvadevand.reminderformiui.utilities.NotificationUtils;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 /**
@@ -36,7 +37,7 @@ public class NotificationIntentService extends IntentService {
         String action = intent.getAction();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (action.equals(NotificationTask.ACTION_RESEND_NOTIFICATIONS) || action.equals(NotificationTask.ACTION_NOTIFY_DELAYED_NOTIFICATION)) {
-                NotificationChannel channel = new NotificationChannel(ReminderUtils.SERVICE_REMINDER_NOTIFICATION_CHANNEL_ID,
+                NotificationChannel channel = new NotificationChannel(NotificationUtils.SERVICE_REMINDER_NOTIFICATION_CHANNEL_ID,
                         getString(R.string.service_notification_channel_name),
                         NotificationManager.IMPORTANCE_LOW);
 
@@ -44,7 +45,7 @@ public class NotificationIntentService extends IntentService {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                 int imageId = sharedPreferences.getInt(getString(R.string.pref_image_key), ReminderUtils.getDefaultImageId());
 
-                Notification notification = new NotificationCompat.Builder(this, ReminderUtils.SERVICE_REMINDER_NOTIFICATION_CHANNEL_ID)
+                Notification notification = new NotificationCompat.Builder(this, NotificationUtils.SERVICE_REMINDER_NOTIFICATION_CHANNEL_ID)
                         .setSmallIcon(ReminderUtils.getMonocolorImageId(imageId))
                         .setContentTitle(getString(R.string.message_update_notifications))
                         .setOngoing(true)

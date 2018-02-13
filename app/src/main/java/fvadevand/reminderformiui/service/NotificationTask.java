@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import fvadevand.reminderformiui.data.NotificationContract.NotificationEntry;
+import fvadevand.reminderformiui.utilities.NotificationUtils;
 import fvadevand.reminderformiui.utilities.ReminderUtils;
 
 /**
@@ -53,7 +54,7 @@ public class NotificationTask {
                 updateNotification(context, bundle);
                 break;
             case ACTION_NOTIFY_DELAYED_NOTIFICATION:
-                ReminderUtils.notifyNotification(context, bundle);
+                NotificationUtils.notifyNotification(context, bundle);
                 break;
         }
     }
@@ -74,7 +75,7 @@ public class NotificationTask {
             if (isDelay(notificationBundle)) {
                 startDelayNotification(context, notificationBundle);
             } else {
-                ReminderUtils.notifyNotification(context, notificationBundle);
+                NotificationUtils.notifyNotification(context, notificationBundle);
             }
         }
         cursor.close();
@@ -87,17 +88,33 @@ public class NotificationTask {
 
         int rowsDeleted = context.getContentResolver().delete(uri, null, null);
         if (rowsDeleted > 0) {
-            ReminderUtils.deleteNotification(context, rowId);
+            NotificationUtils.deleteNotification(context, rowId);
             stopDelayNotification(context, notificationBundle);
         }
     }
 
     private static void deleteAllNotifications(Context context) {
 
+        Cursor cursor = context.getContentResolver().query(
+                NotificationEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        if (cursor == null) return;
+
+        while (cursor.moveToNext()) {
+            Bundle notificationBundle = getBundleFromCursor(cursor);
+            if (isDelay(notificationBundle)) {
+                stopDelayNotification(context, notificationBundle);
+            }
+        }
+        cursor.close();
+
         int rowsDeleted = context.getContentResolver().delete(NotificationEntry.CONTENT_URI, null, null);
         if (rowsDeleted > 0) {
-            ReminderUtils.deleteAllNotifications(context);
-            //TODO: add delete all alarms
+            NotificationUtils.deleteAllNotifications(context);
         }
     }
 
@@ -128,10 +145,10 @@ public class NotificationTask {
             stopDelayNotification(context, notificationBundle);
 
             if (isDelay(notificationBundle)) {
-                ReminderUtils.deleteNotification(context, rowId);
+                NotificationUtils.deleteNotification(context, rowId);
                 startDelayNotification(context, notificationBundle);
             } else {
-                ReminderUtils.notifyNotification(context, notificationBundle);
+                NotificationUtils.notifyNotification(context, notificationBundle);
             }
         }
     }
@@ -146,7 +163,7 @@ public class NotificationTask {
             if (isDelay(notificationBundle)) {
                 startDelayNotification(context, notificationBundle);
             } else {
-                ReminderUtils.notifyNotification(context, notificationBundle);
+                NotificationUtils.notifyNotification(context, notificationBundle);
             }
         }
     }
