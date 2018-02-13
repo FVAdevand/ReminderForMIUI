@@ -1,11 +1,14 @@
 package fvadevand.reminderformiui.utilities;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -156,6 +159,7 @@ public class ReminderUtils {
         notificationView.setOnClickPendingIntent(R.id.btn_clear, startServicePendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) return;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel = new NotificationChannel(
@@ -165,38 +169,37 @@ public class ReminderUtils {
             notificationManager.createNotificationChannel(mChannel);
         }
 
+        Bitmap largeIconBitmap = BitmapFactory.decodeResource(context.getResources(), imageId);
+
         Notification notification = new NotificationCompat.Builder(context, MAIN_REMINDER_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(getMonocolorImageId(imageId))
-                .setContent(notificationView)
+                //      .setContent(notificationView)
+                .setLargeIcon(largeIconBitmap)
+                .setContentTitle(title)
+                .setContentText(message)
+                .addAction(R.drawable.ic_clear_black, "DEL", startServicePendingIntent)
+                .setColor(context.getResources().getColor(R.color.colorPrimary))
+                .setContentInfo("Example")
+                .setDeleteIntent(startServicePendingIntent)
+
                 .setContentIntent(startActivityPendingIntent)
-                .setOngoing(true)
+                //.setOngoing(true)
                 .build();
 
-        try {
-            Object miuiNotification = Class.forName("android.app.MiuiNotification").newInstance();
-            Field customizedIconField = miuiNotification.getClass().getDeclaredField("customizedIcon");
-            customizedIconField.setAccessible(true);
-            customizedIconField.set(miuiNotification, true);
-
-            Field extraNotificationField = notification.getClass().getField("extraNotification");
-            extraNotificationField.setAccessible(true);
-            extraNotificationField.set(notification, miuiNotification);
-
-        } catch (Exception e) {
-
-        }
+        prepareNotificationForMiui(notification);
 
         notificationManager.notify(notificationId, notification);
-        Log.i(LOG_TAG, formatTime(context, Calendar.getInstance()));
     }
 
     public static void deleteNotification(Context context, int notificationId) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) return;
         notificationManager.cancel(notificationId);
     }
 
     public static void deleteAllNotifications(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) return;
         notificationManager.cancelAll();
     }
 
@@ -223,5 +226,21 @@ public class ReminderUtils {
     public static long getLocalTimeInMillis(long utcTimeInMillis) {
         long offset = TimeZone.getDefault().getOffset(utcTimeInMillis);
         return utcTimeInMillis + offset;
+    }
+
+    private static void prepareNotificationForMiui(Notification notification) {
+        try {
+            @SuppressLint("PrivateApi") Object miuiNotification = Class.forName("android.app.MiuiNotification").newInstance();
+            Field customizedIconField = miuiNotification.getClass().getDeclaredField("customizedIcon");
+            customizedIconField.setAccessible(true);
+            customizedIconField.set(miuiNotification, true);
+
+            Field extraNotificationField = notification.getClass().getField("extraNotification");
+            extraNotificationField.setAccessible(true);
+            extraNotificationField.set(notification, miuiNotification);
+
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "OS is not MIUI");
+        }
     }
 }
