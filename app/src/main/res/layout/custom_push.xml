@@ -16,7 +16,7 @@
         android:layout_marginStart="4dp"
         android:contentDescription="@string/description_icon_notification"
         android:padding="@dimen/push_image_padding"
-        tools:src="@drawable/add_color" />
+        tools:src="@drawable/ic_add_color" />
 
     <LinearLayout
         android:layout_width="0dp"

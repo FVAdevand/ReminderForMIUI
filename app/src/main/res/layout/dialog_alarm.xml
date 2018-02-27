@@ -12,6 +12,9 @@
         android:layout_marginEnd="@dimen/margin_edge_dialog_item"
         android:layout_marginStart="@dimen/margin_edge_dialog_item"
         android:layout_marginTop="@dimen/margin_top_dialog_item"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:drawableStart="@drawable/ic_access_time_black"
+        android:gravity="center_vertical"
         android:text="@string/edit_mode_time_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -31,6 +34,8 @@
         android:layout_marginEnd="@dimen/margin_edge_dialog_item"
         android:layout_marginStart="@dimen/margin_edge_dialog_item"
         android:layout_marginTop="@dimen/margin_top_dialog_item"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:drawableStart="@drawable/ic_insert_invitation_black"
         android:text="@string/edit_mode_date_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 

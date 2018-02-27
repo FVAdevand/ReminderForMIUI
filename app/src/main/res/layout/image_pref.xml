@@ -10,6 +10,6 @@
         android:layout_height="32dp"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        tools:src="@drawable/add_color" />
+        tools:src="@drawable/ic_add_color" />
 
 </FrameLayout>

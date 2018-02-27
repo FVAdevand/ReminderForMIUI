@@ -56,6 +56,7 @@ public class ReminderAdapter extends CursorAdapter {
         if (TextUtils.isEmpty(message)) {
             messageTextView.setVisibility(View.GONE);
         } else {
+            messageTextView.setVisibility(View.VISIBLE);
             messageTextView.setText(message);
         }
 
